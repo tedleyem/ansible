@@ -1,0 +1,3 @@
+---
+# defaults file for test-role-1
+docker_dev_group: yes # used to create openshif docker platform

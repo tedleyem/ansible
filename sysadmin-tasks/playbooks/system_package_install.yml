@@ -1,0 +1,21 @@
+--- 
+- name: Install system packages 
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - ../vars/main.yml
+  tasks:  
+    - name: Install specified software package updates
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ system_packages }}"
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+    - name: Install specified software package updates
+      package:
+        name: "{{ item }}"
+        state: latest
+      with_items: "{{ system_packages }}"
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+

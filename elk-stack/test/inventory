@@ -1,0 +1,7 @@
+localhost ansible_connection=local
+
+[net-docks]
+dollydk[01:06] image="<user-name>/ansible-node" ansible_connection=docker
+
+[elk]
+dollydk01

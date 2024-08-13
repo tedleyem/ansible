@@ -1,0 +1,12 @@
+auditbeat.modules:
+
+- module: file_integrity
+  paths:
+  - /bin
+  - /usr/bin
+  - /sbin
+  - /usr/sbin
+  - /etc
+
+output.elasticsearch:
+  hosts: ["172.16.31.12:9200"]  

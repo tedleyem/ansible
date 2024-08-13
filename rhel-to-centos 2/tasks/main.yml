@@ -1,0 +1,5 @@
+- import_tasks: "1_yum_prep.yml"
+- import_tasks: "2_mirror_match.yml"
+- import_tasks: "3_packages.yml"
+- import_tasks: "4_rhel_strip.yml"
+- import_tasks: "5_yum-upgrade.yml"

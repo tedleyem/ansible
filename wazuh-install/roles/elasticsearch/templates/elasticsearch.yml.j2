@@ -1,0 +1,24 @@
+# Config File for Elasticsearch
+cluster.name: {{ es_cluster_name }}
+path.data: {{ es_path_data }}
+path.logs: {{ es_path_logs }}
+http.port: {{ es_http_port }}
+network.host: {{ ansible_default_ipv4.address }}
+
+{% if es_bootstrap_memory_lock and ansible_memtotal_mb >= '8192' %}
+bootstrap.memory_lock: true
+{%else%}
+bootstrap.memory_lock: false
+{% endif %}
+
+{% if es_xpack %}
+xpack.monitoring.history.duration: {{ es_xpack_monitoring_history_duration }}
+xpack.monitoring.collection.enabled: true
+{% endif %}
+
+node.master: true
+node.name: {{ es_cluster_name }}-stack
+#discovery.seed_hosts: ["{{ ansible_default_ipv4.address}}"]
+#discovery.seed_providers: ["{{ ansible_default_ipv4.address}}"]
+cluster.initial_master_nodes: ["{{ ansible_default_ipv4.address}}"]
+discovery.zen.ping.unicast.hosts: ["{{ ansible_default_ipv4.address}}"]

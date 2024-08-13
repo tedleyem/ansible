@@ -1,0 +1,11 @@
+---
+  - name: Gather available local users
+    getent:
+      database: passwd
+
+  - name: Show gathered local user names only
+    debug:
+      msg: "{{ item }}"
+    loop: "{{ getent_passwd.keys() | list }}"
+    when: ansible_check_mode
+

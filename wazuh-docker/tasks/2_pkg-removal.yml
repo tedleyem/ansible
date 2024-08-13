@@ -1,0 +1,24 @@
+# copy each rpm keys
+- name: (PKG-R)Remove old Repos
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/yum.repos.d/wazuh.repo"
+    - "/etc/yum.repos.d/atomic.repo"
+    - "/etc/yum.repos.d/elastic.repo"
+    - "/etc/yum.repos.d/duosecurity.repo"
+    - "/etc/yum.repos.d/mysql-community.repo "
+    - "/etc/yum.repos.d/mysql-community-source.repo"
+  ignore_errors: true
+  become: true
+
+- name: (PKG-R) Remove old packages
+  package:
+    name: ['wazuh-agent', 'metricbeat', 'auditbeat', 'packetbeat', 'filebeat',]
+    state: absent
+  become: true
+
+- name: (PKG-R) Yum makecache fast
+  command: yum makecache fast
+  #warn: no

@@ -1,0 +1,43 @@
+---
+# defaults file for test-role-1
+user_dockerfile: "yes" # set to yes or no for customer dockerfile in playbook
+build_base_images: "no"
+dockerhub_registry: "https://hub.docker.com/u/<user-name>"
+dockerhub_username: "<user-name>"
+dockerhub_password: "pasword"
+
+dock_ubuntu_image: "ubuntu:18.04"
+dock_centos_image: "centos:7"
+
+local_container_name: "funny_bone"
+ansible_keypair: "/home/$USER/.ssh/id_rsa.pub"
+local_user_keypair: "/home/ansible/.ssh/id_rsa.pub"
+
+
+# Docker variables
+docker_inventory_group: [ 'dolly01', 'dolly02', 'dolly03',]
+docker_image_default: "<user-name>/centos7"
+docker_inventory_group2: [ 'dolly04', 'dolly05', 'dolly06',]
+docker_image_default2: "<user-name>/ansible-node"
+docker_groups: [ 'net-docks', ]
+docker_privileged: true
+docker_state: started
+docker_use_tls: true
+docker_stop_timeout: 1
+docker_pkgs: [ 'docker', 'docker-compose' ]
+docker_python_pip_ver: 3.6
+docker_pip3x_pkgs: [ 'docker>4.1.0', 'docker-compose>1.17.1' ]
+docker_use_docker_connection: true
+docker_exposed: [ "80", "443", "6379", "26379", "25" ]
+docker_ports: "22"
+docker_network: docknet
+docker_network_loop: [ 'docknet1', 'dockweb',]
+#docker_network_loop: [ 'docversion: '2' ]
+docker_network_mode: host
+docker_restart: 0
+docker_pull: 0
+docker_command: ""
+docker_ip: "127.0.0.1"
+docker_subnet: 127.0.0.0/16
+docker_gateway: 127.0.0.1
+docker_iprange: [ '127.0.0.251',]

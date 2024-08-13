@@ -1,0 +1,11 @@
+---
+- import_tasks: vars.yml
+
+- import_tasks: install.yml
+
+- import_tasks: config.yml
+
+- import_tasks: manage.yml
+
+#- import_tasks: cacert.yml
+#  when: openssl_cacert_import

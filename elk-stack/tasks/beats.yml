@@ -1,0 +1,8 @@
+- name: Include OS-specific variables.
+  include_vars: "{{ playbook_dir }}/defaults/main.yml"
+
+- import_tasks: "auditbeat.yml"
+- import_tasks: "metricbeat.yml"
+- import_tasks: "packetbeat.yml"
+- import_tasks: "heartbeat.yml"
+- import_tasks: "filebeat.yml"

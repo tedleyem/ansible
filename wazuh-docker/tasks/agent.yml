@@ -1,0 +1,58 @@
+---
+# Copy and install new repos and packages
+- name:  Copy Atomic Repos
+  template:
+    src: "repo/atomic.repo.j2"
+    dest: "/etc/yum.repos.d/atomic.repo"
+    mode: 0644
+  become: true
+
+# Copy and install new repos and packages
+- name:  Copy Wazuh Repos
+  template:
+    src: "repo/wazuh.repo.j2"
+    dest: "/etc/yum.repos.d/wazuh.repo"
+    mode: 0644
+  become: true
+
+#Install atomiccorp keys for wazuh dependancies
+- name: Import Atomicorp GPG Keys
+  rpm_key:
+    state: present
+    key: "{{ item }}"
+  with_items:
+    - "{{ atomic_art_key }}"
+    - "{{ atomic_gpg_key }}"
+
+# Remove old versions of ossec
+- name:  remove ossec-hids-agent and ossec-hids
+  yum:
+    name: ['ossec-hids', 'ossec-hids-agent']
+    state: absent
+
+# add filebeat/elasticsearch repo
+- name: Copy templated elasticsearch.repo
+  template:
+    src: elasticsearch.repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    mode: 0644
+  become: true
+
+#install filebeat and wazuh-agent
+- name:  Install wazuh-agent
+  yum:
+    name: ['wazuh-agent']
+#    name: ['filebeat', 'wazuh-agent']
+  become: true
+
+- name: Configure filebeat wazuh-agent
+  template:
+    src: "config/wazuh-agent.yml.j2"
+    dest: "/etc/filebeat/filebeat.yml"
+  become: true
+
+- name: Copy ossec.conf
+  template:
+    src: "config/ossec.conf.j2"
+    dest: "/var/ossec/etc/ossec.conf"
+  become: true

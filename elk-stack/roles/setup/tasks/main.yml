@@ -1,0 +1,20 @@
+---
+- name: Install dependancies
+  package:
+    name: [cmake, tcl]
+    state: present
+  become: true
+
+- name: Get Elasticsearch Host IP
+  vars:
+    data_yaml: |
+      #!jinja2: lstrip_blocks: True
+      {% for host in groups['elk'] %}
+        - {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+      {% endfor %}
+  set_fact:
+    # Its ugly but this eliminates white spaces adn new lines to format the given value into the conf files correctly
+    es_host_port: "{{ data_yaml | from_yaml | to_nice_yaml | regex_replace('-','') | regex_replace('\n','') | regex_replace('^\\/', '') }}"
+
+- debug:
+    msg: "elk master ip is {{ es_host_port }}"

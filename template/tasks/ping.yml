@@ -1,0 +1,4 @@
+---
+# tasks file for template
+- name: Simple ping check
+  ansible.builtin.ping:

@@ -1,0 +1,42 @@
+- name: Create a data container
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_container_repo_image }}"
+    privileged: "{{ docker_privileged }}"
+    exposed_ports: "{{ docker_exposed }}"
+    #restart: "{{ docker_restart|default(omit) }}"
+    volumes:
+      - /docker/data
+      - "/opt/nagios/etc:/configs/"
+#      - "/opt/nagios/etc/objects/commands.cfg:"
+#      - "/opt/nagios/etc/objects/contacts.cfg:"
+#      - "/opt/nagios/etc/objects/timeperiods.cfg:"
+#      - "/opt/nagios/etc/objects/templates.cfg:"
+#      - "/opt/nagios/etc/objects/localhost.cfg:"
+#      - "/usr/local/nagios/etc/objects/hosts.cfg:"
+#      - "/opt/nagios/etc/objects/windows.cfg:"
+#      - "/opt/nagios/etc/objects/switch.cfg:"
+#      - "/opt/nagios/etc/objects/printer.cfg:"
+#      - "/opt/nagios/etc/servers:"
+#      - "/opt/nagios/etc/printers:"
+#      - "/opt/nagios/etc/switches:"
+#      - "/opt/nagios/etc/routers:"
+
+#VOLUME "${NAGIOS_HOME}/var"
+#"${NAGIOS_HOME}/etc"
+#"/var/log/apache2"
+#"/opt/Custom-Nagios-Plugins"
+#"/opt/nagiosgraph/var"
+#"/opt/nagiosgraph/etc"
+
+#- name: Re-create a redis container
+#  docker_container:
+#    name: myredis
+#    image: redis
+#    command: redis-server --appendonly yes
+#    state: present
+#    recreate: yes
+#    exposed_ports:
+#      - 6379
+#    volumes_from:
+#      - mydata

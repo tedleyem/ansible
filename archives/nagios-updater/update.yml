@@ -1,0 +1,5 @@
+- hosts: monitor
+  become: yes
+  tasks:
+    - import_tasks: "{{ playbook_dir }}/tasks/1.update.yml"
+    - import_tasks: "{{ playbook_dir }}/tasks/2.restart.yml"

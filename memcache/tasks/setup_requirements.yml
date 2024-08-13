@@ -1,0 +1,16 @@
+---
+- name: Gather facts
+  setup:
+
+- name: install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Install libevent dependancies
+  package:
+    name: [libevent, libevent-devel, libevent-doc, libverto-libevent]
+    state: present
+  register: memcached_install
+  when: ansible_os_family == "RedHat"

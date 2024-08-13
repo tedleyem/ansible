@@ -1,0 +1,45 @@
+- name: Disable redhat subscriptions and plugins
+  replace:
+    path: "{{ item }}"
+    regexp: 'enabled=0'
+    replace: 'enabled=1'
+  with_items:
+      - /etc/yum/pluginconf.d/rhnplugin.conf
+      - /etc/yum/pluginconf.d/subscription-manager.conf
+
+- name: Remove OLD Repos
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+      - "/etc/yum.repos.d/spacewalk-client.repo"
+      - "/etc/yum.repos.d/spacewalk-client-nightly.repo"
+      - "/etc/yum.repos.d/redhat.repo"
+      - "/etc/yum.repos.d/rhel-source.repo"
+
+- name: Update /etc/sysconfig/rhn/up2date
+  replace:
+    path: /etc/sysconfig/rhn/up2date
+    regexp: 'serverURL=https://spacewalk.revelex.com/XMLRPC'
+    replace: 'serverURL=http://spacewalk.revelex.com/XMLRPC'
+    
+#installing EPE repo
+- name:  Install EPEL rhel6
+  yum:
+    name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm"
+    state: present
+
+- name:  Install libselinux-python dependancies for RHEL
+  yum:
+    name: "http://mirror.centos.org/centos/6/os/x86_64/Packages/libselinux-python-2.0.94-7.el6.x86_64.rpm"
+    #name: ['libselinux-python',]
+    state: present
+
+
+- name: Add Port 1514 to Firewall RHEL
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: 1514
+  when: ansible_os_family == "RedHat"

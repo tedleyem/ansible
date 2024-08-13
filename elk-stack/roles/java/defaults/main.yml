@@ -1,0 +1,9 @@
+---
+# Set java_packages if you would like to use a different version than the
+# JDK version options include:
+#   - java
+#   - java-1.7.0-openjdk
+#   - java-1.8.0-openjdk
+java_packages:
+  - java-1.8.0-openjdk
+java_home: "/usr/lib/jvm/jre/java-1.8.0-openjdk/ " 

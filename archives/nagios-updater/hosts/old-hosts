@@ -1,0 +1,129 @@
+# This is an old hosts file. Used to quickly copy and paste host files from
+# the running nagios list to remove them or add them later.
+#
+
+# 'book01' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               book01
+        alias                   BOOK01
+        address                 10.3.9.1
+        contact_groups          linux-admins, java
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'apivm02' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               apivm02
+        alias                   APIVM02
+        address                 10.3.8.152
+        contact_groups           linux-admins, java
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'apivm03' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               apivm03
+        alias                   APIVM03
+        address                 10.3.8.153
+        contact_groups           linux-admins, java
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+        
+# 'book02' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               book02
+        alias                   BOOK02
+        address                 10.3.9.2
+        contact_groups          linux-admins, java
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'webvm01' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               webvm01
+        alias                   WebServer Webvm01
+        address                 webvm01
+        contact_groups           linux-admins
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+#
+# 'webvm02' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               webvm02
+        alias                   WebServer Webvm02
+        address                 webvm02
+        contact_groups           linux-admins
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'webvm03' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               webvm03
+        alias                   WebServer Webvm03
+        address                 webvm03
+        contact_groups           linux-admins
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'webvm04' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               webvm04
+        alias                   WebServer Webvm04
+        address                 webvm04
+        contact_groups           linux-admins
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }
+
+# 'webvm10' host definition
+define host{
+        use                     generic-host  ; Name of host template to use
+        host_name               webvm10
+        alias                   WebServer Webvm10
+        address                 webvm10
+        contact_groups           linux-admins
+        check_command           check-host-alive
+        max_check_attempts      10
+        notification_interval   480
+        notification_period     24x7
+        notification_options    d,u,r
+        }

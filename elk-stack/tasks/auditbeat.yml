@@ -1,0 +1,41 @@
+---
+# install/run auditbeat elk client
+#
+- name: Copy templated elasticsearch.repo
+  template:
+    src: elasticsearch.repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    mode: 0644
+  become: true
+
+- name: Install rsyslogd
+  yum:
+    name: rsyslog
+  become: true
+
+- name: Install auditbeat rpms
+  yum:
+    name: auditbeat
+  become: true
+
+- name: Copy auditbeat configuration template
+  template:
+    src: auditbeat.yml.j2
+    dest: /etc/auditbeat/auditbeat.yml
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: Start auditbeat service
+  service:
+    name: auditbeat
+    state: started
+  become: true
+
+- name: Setup auditbeat service on boot
+  service:
+    name: auditbeat
+    state: started
+    enabled: true
+  become: true

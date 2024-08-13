@@ -1,0 +1,32 @@
+---
+- name: Download and extract {{ memcache_version }}
+  unarchive:
+    src: "{{ memcache_url }}"
+    dest: "/tmp/"
+    remote_src: yes
+  register: memcached_install
+
+- name: Create memcached dir
+  file:
+    path: "{{ memcache_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Install {{ memcache_version }}
+  command: "sh configure --prefix={{ memcache_dir }}/"
+  args:
+    chdir: "{{ install_dir }}"
+  become: true
+  tags:
+    - skip_ansible_lint
+
+- name: Sudo Make
+  make:
+    chdir: "{{ install_dir }}"
+  become: yes
+
+- name: Sudo Make Install
+  community.general.make:
+    chdir: "{{ install_dir }}"
+    target: install
+  become: true

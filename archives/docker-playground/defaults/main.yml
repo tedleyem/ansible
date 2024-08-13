@@ -1,0 +1,35 @@
+---
+# Variables that define which compose files will be deployed
+use_centos_base_images: "yes"
+use_ubuntu_base_images: "yes"
+
+# Docker variables
+# First set of docker images
+docker_inventory_group: [ 'dolly01', 'dolly02', 'dolly03',]
+docker_image_default: "centos:centos7.9.2009"
+# Second set of virtual images
+docker_inventory_group2: [ 'dolly04', 'dolly05', 'dolly06',]
+docker_image_default2: "<user-name>/ansible-node"
+docker_privileged: true
+docker_state: started
+docker_use_tls: true
+docker_stop_timeout: 1
+docker_pkgs: [ 'docker', 'docker-compose' ]
+docker_python_pip_ver: 3.6
+docker_pip3x_pkgs: [ 'docker>5.0.3', 'docker-compose>1.29.2' ]
+docker_use_docker_connection: true
+docker_exposed: [ "80", "443", "6379", "26379", "25" ]
+docker_ports: "22"
+docker_network: docknet
+docker_network_loop: [ 'docknet1', 'dockweb',]
+#docker_network_loop: [ 'docversion: '2' ]
+docker_network_mode: host
+docker_restart: 0
+docker_pull: 0
+docker_command: ""
+docker_ip: "127.0.0.1"
+
+docker_volumes: "/opt/docker"
+
+# Docker data dir location if not default
+docker_data_volume: "/opt/docker/data"

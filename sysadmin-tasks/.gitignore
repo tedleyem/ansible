@@ -1,0 +1,48 @@
+# build products...
+*.py[co]
+build
+AUTHORS.TXT
+# Emacs backup and autosave files...
+*~
+.\#*
+\#*
+# RPM stuff...
+MANIFEST
+dist
+rpm-build
+# Eclipse/PyDev stuff...
+.project
+.pydevproject
+# PyCharm stuff...
+.idea
+#IntelliJ IDEA stuff..
+*.iml
+#VSCode stuff..
+.vscode/
+# Mac OS X stuff...
+.DS_Store
+docs/man/man3/*
+# Vim swap files
+*.swp
+*.swo
+[._]*.un~
+credentials.yml
+# test output
+*.retry
+*.out
+# Development
+/test/develop
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+venv
+env
+.vagrant
+*/.vagrant
+tests/Vagrantfile_test
+tests/Vagrantfile_*

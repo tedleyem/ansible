@@ -1,0 +1,7 @@
+- name: Add TCP PORT 1514 to Firewall
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "1514"
+  become: true

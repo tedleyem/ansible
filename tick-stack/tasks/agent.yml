@@ -1,0 +1,73 @@
+# SETUP AGENT
+
+
+#- name: Get Tick Stack Host ip
+#  vars:
+#    data_yaml: |
+#      #!jinja2: lstrip_blocks: True
+#      {% for host in groups['tick'] %}
+#        - {{ hostvars[host]['ansible_default_ipv4']['address'] }}
+#      {% endfor %}
+#  set_fact:
+#    # Its ugly but this eliminates white spaces adn new lines to format the given value into the conf files correctly
+#    tick_host_port: "{{ data_yaml | from_yaml | to_nice_yaml | regex_replace('-','') | regex_replace('\n','') | regex_replace('^\\/', '') }}"
+
+- name: Copy templated influxdb.repo
+  template:
+    src: influxdb.repo.j2
+    dest: /etc/yum.repos.d/influxdb.repo
+    mode: 0644
+  become: true
+
+  #FIREWALL TASKS
+- name: check if firewalld exists
+  stat:
+    path: /etc/sysconfig/firewalld
+  register: firewall_rules
+
+
+- name: "[Telegraf] ADD FIREWALLD TCP PORT {{ telegraf_port }}"
+  firewalld:
+   port: "{{ telegraf_port }}/tcp"
+   zone: public
+   permanent: true
+   state: enabled
+  become: true
+  when: "firewall_rules.stat.exists == true"
+# END telegraf FIREWALLD PORT
+
+- name: "[Telegraf] ADD FIREWALLD TCP PORT {{ telegraf_port }}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "{{ telegraf_port }}"
+  when: "firewall_rules.stat.exists == false"
+
+# INSTALL TELEGRAF
+- name: "[Telegraf] Install telegraf"
+  yum:
+    name: telegraf
+    state: present
+  become: true
+
+- name: "[Telegraf] Copy templated telegraf.yml"
+  template:
+    src: "agent.conf.j2"
+    dest: "/etc/telegraf/telegraf.conf"
+    mode: 0644
+  become: true
+
+- name: "[Telegraf] Setup telegraf service to autostart"
+  service:
+    name: telegraf
+    state: restarted
+    enabled: true
+  become: true
+  
+- name: "[Telegraf] Setup telegraf service to autostart"
+  systemd:
+    name: telegraf
+    state: restarted
+    enabled: true
+  become: true

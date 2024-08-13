@@ -1,0 +1,267 @@
+# This is an old services file. Used to quickly copy and paste host files from
+# the running nagios list to remove them or add them later.
+#
+
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       apivm02
+        service_description             PING
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            c,r
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       apivm02
+        service_description             JAVA
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           2
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            w,u,c,r
+#        check_command                   check_tcp_f5!8080!"GET /api/servlet/BookingServlet?task=apitest"!OK
+        check_command                   check_javaproc
+        }
+
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book01
+        service_description             PING
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            c,r
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book01
+        service_description             JAVA
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           2
+        retry_check_interval            1
+        contact_groups                  network-admins, user-rrp1, <user-name>p1, support, java
+        notification_interval           240
+        notification_period             24x7
+        notification_options            w,u,c,r
+#        check_command                   check_tcp_f5!8080!"GET /booking/servlet/BookingServlet?task=bookingtest"!OK
+        check_command                   check_javaproc
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book01
+        service_description             Check Load
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            2
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            w,u,c,r
+        check_command                   check_load!10.0,8.0,5.0!15.0,10.0,8.0
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book01
+        service_description             VGOS Free Space
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           120
+        notification_period             24x7
+        notification_options            w,u,c,r
+        check_command                   check_remote_disk!10%!5%!/dev/mapper/vg_os-lv_os
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book02
+        service_description             VGOS Free Space
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           120
+        notification_period             24x7
+        notification_options            w,u,c,r
+        check_command                   check_remote_disk!10%!5%!/dev/mapper/vg_os-lv_os
+        }
+
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book02
+        service_description             PING
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            c,r
+        check_command                   check_ping!100.0,20%!500.0,60%
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book02
+        service_description             JAVA
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           2
+        retry_check_interval            1
+        contact_groups                  network-admins, user-rrp1, <user-name>p1, support, java
+        notification_interval           240
+        notification_period             24x7
+        notification_options            w,u,c,r
+#        check_command                   check_tcp_f5!8080!"GET /booking/servlet/BookingServlet?task=bookingtest"!OK
+        check_command                   check_javaproc
+        }
+
+## Service definition
+define service{
+        use                             generic-service         ; Name of service template to use
+        host_name                       book02
+        service_description             Check Load
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            2
+        contact_groups                  linux-admins
+        notification_interval           240
+        notification_period             24x7
+        notification_options            w,u,c,r
+        check_command                   check_load!10.0,8.0,5.0!15.0,10.0,8.0
+        }
+
+# Serviceescalation definition
+define serviceescalation{
+        host_name               book02
+        service_description             PING
+        first_notification              2
+        last_notification               6
+        contact_groups                  linux-admins
+        notification_interval           0
+        }
+
+# Serviceescalation definition
+define serviceescalation{
+        host_name               book02
+        service_description             JAVA
+        first_notification              2
+        last_notification               6
+        contact_groups                  linux-admins
+        notification_interval           0
+        }
+
+#Service definition
+define service{
+       use                             generic-service         ; Name of service template to use
+       host_name                       webvm01
+       service_description             CHECK RSYNC webvm01
+       is_volatile                     0
+       check_period                    24x7
+       max_check_attempts              3
+       normal_check_interval           5
+       retry_check_interval            1
+       contact_groups                  linux-admins
+       notification_interval           240
+       notification_period             24x7
+       notification_options            c,r
+       check_command                   check_tcp!873
+       }
+
+#Service definition
+define service{
+       use                             generic-service         ; Name of service template to use
+       host_name                       webvm02
+       service_description             CHECK RSYNC webvm02
+       is_volatile                     0
+       check_period                    24x7
+       max_check_attempts              3
+       normal_check_interval           5
+       retry_check_interval            1
+       contact_groups                  linux-admins
+       notification_interval           240
+       notification_period             24x7
+       notification_options            c,r
+       check_command                   check_tcp!873
+       }
+
+#Service definition
+define service{
+       use                             generic-service         ; Name of service template to use
+       host_name                       webvm03
+       service_description             CHECK RSYNC webvm03
+       is_volatile                     0
+       check_period                    24x7
+       max_check_attempts              3
+       normal_check_interval           5
+       retry_check_interval            1
+       contact_groups                  linux-admins
+       notification_interval           240
+       notification_period             24x7
+       notification_options            c,r
+       check_command                   check_tcp!873
+       }
+
+#Service definition
+define service{
+       use                             generic-service         ; Name of service template to use
+       host_name                       webvm04
+       service_description             CHECK RSYNC webvm04
+       is_volatile                     0
+       check_period                    24x7
+       max_check_attempts              3
+       normal_check_interval           5
+       retry_check_interval            1
+       contact_groups                  linux-admins
+       notification_interval           240
+       notification_period             24x7
+       notification_options            c,r
+       check_command                   check_tcp!873
+       }

@@ -1,0 +1,17 @@
+---
+- name: Build local Dockerfile image
+  docker_image:
+    build:
+      path: "{{ role_path }}/files"
+      dockerfile: Dockerfile
+      pull: false
+      args:
+        http_proxy: "{{ http_proxy | default('') }}"
+        https_proxy: "{{ https_proxy | default('') }}"
+        no_proxy: "{{ no_proxy | default('') }}"
+    name: "{{ local_container_name }}"
+    tag: "{{ awx_version }}"
+    source: 'build'
+    force_source: true
+  delegate_to: localhost
+  when: use_container_for_build|default(true)|bool

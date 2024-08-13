@@ -1,0 +1,17 @@
+--- 
+- name: Check current RAM usage
+  hosts: all
+  gather_facts: true
+  tasks:
+    - debug: 
+        msg: | 
+          hostname : {{ inventory_hostname }}
+          --- MEMORY ----
+          Used  : {{ ansible_memory_mb.real.used }}
+          Free  : {{ ansible_memory_mb.real.free }}
+          Total : {{ ansible_memory_mb.real.total }}  
+          --- SWAP ----
+          Total : {{ ansible_memory_mb.swap.used }} 
+          Total : {{ ansible_memory_mb.swap.free }} 
+          Total : {{ ansible_memory_mb.swap.total }} 
+  

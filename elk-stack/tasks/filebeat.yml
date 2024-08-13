@@ -1,0 +1,58 @@
+---
+#
+# install/run filebeat elk client
+#
+- name: Copy templated elasticsearch.repo
+  template:
+    src: elasticsearch.repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    mode: 0644
+  become: true
+
+- name: Install filebeat rpms
+  yum:
+    name: filebeat
+  become: true
+
+- name: Generate filebeat configuration template
+  template:
+    src=filebeat.yml.j2
+    dest=/etc/filebeat/filebeat.yml
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: filebeat_needs_restart
+
+- name: Start filebeat service
+  service:
+    name: filebeat
+    state: started
+  ignore_errors: true
+  become: true
+  
+- name: Setup filebeat service
+  service: name=filebeat state=started enabled=true
+  become: true
+
+- name: Install rsyslogd for fluentd
+  yum:
+    name: rsyslog
+  become: true
+
+- name: Setup common OpenStack rsyslog logging
+  template:
+    src=rsyslog-openstack.conf.j2
+    dest=/etc/rsyslog.d/openstack-logs.conf
+    owner=root
+    group=root
+    mode=0644
+  become: true
+  register: rsyslog_updated
+  when: (logging_backend == 'fluentd')
+
+- name: Restarting rsyslog for fluentd
+  command: systemctl restart rsyslog.service
+  ignore_errors: true
+  when: rsyslog_updated != 0
+  become: true

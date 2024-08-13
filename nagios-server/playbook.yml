@@ -1,0 +1,14 @@
+---
+- hosts: nagios
+  become: yes
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir}}/defaults/main.yml"
+  roles:
+    - role: nagios # role for nagios server
+    - role: firewall
+      when: manage_firewall|bool
+    - role: instructions
+    - role: nagios_nrpe_client # role for installing nrpe on nagios host
+    - role: firewall_client
+      when: manage_firewall|bool

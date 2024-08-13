@@ -1,0 +1,26 @@
+- hosts: ndb_cluster_mgm
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir }}/defaults/main.yml"
+  - import_tasks: "tasks/mysql-cluster-mgm.yml"
+
+- hosts: ndb_cluster_data
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir }}/defaults/main.yml"
+  - import_tasks: "tasks/mysql-cluster-data.yml"
+
+- hosts: ndb_cluster_sql
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir }}/defaults/main.yml"
+  - import_tasks: "tasks/mysql-cluster-sql.yml"

@@ -1,0 +1,45 @@
+---
+- name: Check if system memory is greater than 64G
+  debug:
+    msg: "System memory is {{ansible_memory_mb.real.total | int}} so setting heapsize to 32G upper limit"
+  when: ansible_memory_mb.real.total|int >= 65536
+  become: true
+
+- name: Apply heapsize start tuning for systems with greater than 64G memory
+  lineinfile:
+    path: /etc/elasticsearch/jvm.options
+    regexp: '^-Xms1g'
+    line: '-Xms31g'
+  when: ansible_memory_mb.real.total|int >= 65536
+  become: true
+
+- name: Apply heapsize end tuning for systems with greater than 64G memory
+  lineinfile:
+    path: /etc/elasticsearch/jvm.options
+    regexp: '^-Xmx1g'
+    line: '-Xmx31g'
+  when: ansible_memory_mb.real.total|int >= 65536
+  register: elasticsearch_updated
+  become: true
+
+- name: Print extended documentation for heapsize tuning
+  debug:
+    msg: "Refer to https://www.elastic.co/guide/en/elasticsearch/guide/current/_limiting_memory_usage.html"
+  when: ansible_memory_mb.real.total|int >= 65536
+  become: true
+
+# adding to fix memlock  issues when running elasticsearch
+- name: Copy systemd override.conf
+  template:
+    src: "override.conf.j2"
+    dest: "/etc/systemd/system/elasticsearch.service.d/override.conf"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0660
+  become: true
+  when: ansible_memory_mb.real.total|int >= 65536
+
+- name: just force systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  when: ansible_memory_mb.real.total|int >= 65536

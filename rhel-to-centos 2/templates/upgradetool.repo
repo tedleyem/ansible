@@ -1,0 +1,6 @@
+[upg]
+name=CentOS-$releasever – Upgrade Tool
+baseurl=http://dev.centos.org/centos/6/upg/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6

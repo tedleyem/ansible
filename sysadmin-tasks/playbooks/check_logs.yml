@@ -1,0 +1,25 @@
+--- 
+- name: DUMP LOGS 
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Setting variable for log_file
+      set_fact:
+        log_file: "/var/log/syslog"
+
+    - name: Capture Timestamp
+      shell: date +"%Y%m%d%H%M%S"
+      register: current_date_time
+
+    - name: Check the logs (Debian/Ubuntu)
+      shell: grep "`date --date="today" +%b\ %e`" {{ log_file }}
+      register: log_messages
+      ignore_errors: true
+
+    - name: Logs Output
+      debug: 
+        msg: "{{ log_messages.stdout_lines }}"
+    
+  
+  
+

@@ -1,0 +1,36 @@
+---
+- name: "Allow LOGSTASH TCP PORT {{logstash_syslog_port}}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{logstash_syslog_port}}"
+    jump: ACCEPT
+    ip_version: ipv4
+  become: true
+
+- name: "Allow ES TCP PORT {{es_local_port}}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{es_local_port}}"
+    jump: ACCEPT
+    ip_version: ipv4
+  become: true
+
+- name: "Allow KIBANA TCP PORT {{kibana_server_port}}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{kibana_server_port}}"
+    jump: ACCEPT
+    ip_version: ipv4
+  become: true
+
+- name: "Allow ES_SSL TCP PORT {{elk_server_ssl_cert_port}}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{elk_server_ssl_cert_port}}"
+    jump: ACCEPT
+    ip_version: ipv4
+  become: true

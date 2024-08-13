@@ -1,0 +1,4 @@
+---
+- include: redhat-setup.yml
+  when: ansible_distribution == "RedHat"
+- import_tasks: "wazuh-setup.yml"

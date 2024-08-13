@@ -1,0 +1,16 @@
+---
+- name: Ensure Java is installed.
+  package:
+    name: "{{ java_packages }}"
+    state: present
+  become: true
+
+# Environment setup.
+- name: Set JAVA_HOME if configured.
+  template:
+    src: java_home.sh.j2
+    dest: /etc/profile.d/java_home.sh
+    mode: 0644
+  become: true
+  when: java_home is defined and java_home
+ 

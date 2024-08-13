@@ -1,0 +1,35 @@
+---
+- name: Ensure required vars are defined
+  fail: msg="docker_inventory_group or docker_inventory is required"
+  when: "docker_inventory_group is not defined and docker_inventory is not defined"
+
+- name: Gather facts
+  setup:
+
+- name: Create docker volume data dir
+  file:
+    path: "{{ docker_volumes }}"
+    state: directory
+  become: true
+
+# Install Docker and docker-compose .
+- name: Install docker packages
+  package:
+    name: "{{ docker_pkgs }}"
+    state: present
+#  become: true
+
+
+# Install python based docker packages 2.x
+- name: Install docker packages for python 
+  pip:
+    name:
+      - docker>4.1.0
+      - docker-compose>1.17.1
+#    executable: pip2.7
+
+# Install python based docker packages 3.x
+#- name: "Install docker packages for python {{ docker_python_pip_ver }}"
+#  pip:
+#    name: "{{ docker_pip3x_pkgs }}"
+#    executable: "{{ docker_python_pip_ver }}"

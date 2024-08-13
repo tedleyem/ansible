@@ -1,0 +1,29 @@
+- name: Add TCP PORT {{ memcached_port }}
+  firewalld:
+   port: "{{ memcached_port }}/tcp"
+   zone: public
+   permanent: true
+   state: enabled
+  when: "memcached_port is defined and firewall_rules.stat.exists == true"
+
+- name: Add TCP PORT {{ memcached_port2 }}
+  firewalld:
+   port: "{{ memcached_port2 }}/tcp"
+   zone: public
+   permanent: true
+   state: enabled
+  when: "memcached_port2 is defined and firewall_rules.stat.exists == true"
+
+- name: Add TCP PORT {{ memcached_port3 }}
+  firewalld:
+   port: "{{ memcached_port3 }}/tcp"
+   zone: public
+   permanent: true
+   state: enabled
+  when: "memcached_port3 is defined and firewall_rules.stat.exists == true"
+
+- name: RELOAD FIREWALLD
+  systemd:
+    name: firewalld
+    state: reloaded
+  become: true

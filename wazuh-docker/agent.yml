@@ -1,0 +1,25 @@
+- hosts: wazuh  
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+    #These tasks remove any existing elastic agents that may be old
+    # or cause compatibility issues
+    - import_tasks: "tasks/1_stop-beats.yml"
+    - import_tasks: "tasks/2_pkg-removal.yml"
+    - import_tasks: "tasks/agent.yml"
+
+    - import_tasks: "tasks/firewalld.yml"
+      when: ansible_distribution == 'CentOS'
+    - import_tasks: "tasks/iptables.yml"
+      when: ansible_distribution == 'RedHat'
+
+    - name: Connect wazuh-ahent
+      command: "/var/ossec/bin/agent-auth -m {{ wazuh_manager_ip }}"
+      become: true
+
+    - name: Start Wazuh Agent
+      service:
+        name: wazuh-agent
+        state: started
+        enabled: yes
+      become: true

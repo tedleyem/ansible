@@ -1,0 +1,11 @@
+[Unit]
+Description=memcached{{ memcached_port }}
+After=syslog.target network.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/memcached{{ memcached_port }}
+Type=forking
+ExecStart=/opt/{{ memcache_version }}/bin/memcached -d -p $PORT1 -m $CACHESIZE -c $MAXCONN -u $USER $OPTIONS
+
+[Install]
+WantedBy=multi-user.target

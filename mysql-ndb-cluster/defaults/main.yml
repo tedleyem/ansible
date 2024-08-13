@@ -1,0 +1,17 @@
+---
+mysql_version: 7.3.4
+mysql_tar_url: "http://dev.mysql.com/get/Downloads/MySQL-Cluster-7.3/mysql-cluster-gpl-7.3.4-linux-glibc2.5-x86_64.tar.gz"
+mysql_tar: "mysql-cluster-gpl-7.3.4-linux-glibc2.5-x86_64.tar.gz"
+config_data_mem: 4096M
+config_data_dir: "/usr/local/mysql/data"
+ndb_mgmd_data_dir: "/var/lib/mysql-cluster"
+cnf_max_connections: 1000
+cnf_performance_schema: ON
+mysql_port: "3306"
+mysql_ndb_port: "1186"
+mysql_custom_db: /etc/ansible/mysql/CacheCluster_2019.sql
+# The default root user installed by mysql - almost always root
+mysql_root_home: /root
+mysql_root_username: root
+mysql_root_passwd: "p@ssw0rd!"
+mysql_root_changed_passwd: root

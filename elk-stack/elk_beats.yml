@@ -1,0 +1,5 @@
+---
+# Playbook to install the ELK client utilities
+- hosts: all
+  tasks:
+      - import_tasks: "tasks/beats.yml"

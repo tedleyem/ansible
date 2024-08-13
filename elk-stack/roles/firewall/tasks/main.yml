@@ -1,0 +1,11 @@
+---
+- name: check if firewalld exists
+  stat:
+    path: /etc/sysconfig/firewalld
+  register: firewall_rules
+
+- import_tasks: firewalld.yml
+  when: "firewall_rules.stat.exists == true"
+
+- import_tasks: iptables.yml
+  when: "firewall_rules.stat.exists == false"

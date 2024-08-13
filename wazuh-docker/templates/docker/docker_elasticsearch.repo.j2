@@ -1,0 +1,9 @@
+elasticsearch:
+ image: wazuh/wazuh-elasticsearch:latest
+ ports:
+   - "9200:9200"
+   - "9300:9300"
+ environment:
+   ES_JAVA_OPTS: "-Xms4g -Xmx4g"
+ networks:
+   - docker_elk

@@ -1,0 +1,18 @@
+---
+# This task is used to get the hostname and ip
+# of the nagios master server
+# This variable is used in the nrpe.cfg configuration
+- name: Get Nagios Master information
+  vars:
+    data_yaml: |
+      #!jinja2: lstrip_blocks: True
+      {% for host in groups['nagios'] %}
+        {% if hostvars[host]['nagios_role'] == 'master' %}
+        - {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+        {% endif %}
+      {% endfor %}
+  set_fact:
+    # Its ugly but this eliminates white spaces and new lines to format the given value into the redis conf files correctly
+    nagios_master: "{{ data_yaml | from_yaml | to_nice_yaml | regex_replace('-','') | regex_replace('\n','') | regex_replace('^\\/', '') }}"
+
+- debug: msg="{{ nagios_master }}"

@@ -1,0 +1,19 @@
+- name: restart sssd
+  systemd:
+    state: restarted
+    name: sssd
+    enabled: yes
+    become: yes
+    become_user: root
+    become_method: sudo
+  listen: "restart sssd"
+
+- name: restart sshd
+  systemd:
+    state: restarted
+    name: sshd
+    enabled: yes
+    become: yes
+    become_user: root
+    become_method: sudo
+  listen: "restart sshd"

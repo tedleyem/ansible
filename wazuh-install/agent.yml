@@ -1,0 +1,48 @@
+- name: Copy ossec RPM Keys
+  copy:
+    src: "{{ atomic_gpg }}"
+    dest: /tmp/
+#  when: atomic_check.stat.exists == False
+
+- name: Import ossec art gpg key
+  command: "{{ ossec_import }}"
+  args:
+      chdir: /tmp/
+#  when: atomic_check.stat.exists == False
+
+- name:  Install wazuh and filebeat
+  yum:
+    name: ['filebeat', 'wazuh-agent']
+
+- name: Configure filebeat wazuh-agent
+  copy:
+    src: "/config/wazuh-agent.yml"
+    dest: "/etc/filebeat/filebeat.yml"
+
+- name: Copy ossec.conf
+  copy:
+    src: "/config/ossec.conf"
+    dest: "/var/ossec/etc/ossec.conf"
+
+- name: Add Port 1514 to Firewall
+  firewalld:
+   port: 1514/udp
+   zone: public
+   permanent: true
+   state: enabled
+  when: ansible_distribution == 'CentOS'
+
+- name: Start Filebeat
+  service:
+    name: filebeat
+    state: started
+    enabled: yes
+
+- name: Start Wazuh Agent
+  service:
+    name: wazuh-agent
+    state: started
+    enabled: yes
+
+- name: Connect wazuh-ahent
+  command: "/var/ossec/bin/agent-auth -m {{ wazuh_manager_ip }}"

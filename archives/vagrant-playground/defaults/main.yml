@@ -1,0 +1,29 @@
+---
+# The version of vagrant to install. See https://releases.hashicorp.com/vagrant/ .
+vagrant_version: 2.2.7
+
+# The location to unpack the .tar.xz, if applicable.
+vagrant_unarchive_dest: /usr/local/bin
+
+# vars file for vagrant
+vagrant_release_url: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}"
+vagrant_package: "{{ _vagrant_package[ansible_pkg_mgr] | default(_vagrant_package['src']) }}"
+
+_vagrant_package:
+  apt: "{{ vagrant_release_url }}/vagrant_{{ vagrant_version }}_{{ ansible_architecture }}.deb"
+  dnf: "{{ vagrant_release_url }}/vagrant_{{ vagrant_version }}_{{ ansible_architecture }}.rpm"
+  yum: "{{ vagrant_release_url }}/vagrant_{{ vagrant_version }}_{{ ansible_architecture }}.rpm"
+  zypper: "{{ vagrant_release_url }}/vagrant_{{ vagrant_version }}_{{ ansible_architecture }}.rpm"
+  src: "{{ vagrant_release_url }}/vagrant_{{ vagrant_version }}_linux_amd64.zip"
+
+vagrant_pip_packages:
+  - python-vagrant
+  - vagranttoansible
+  - vagrantpy
+  - ansible-vagrant
+
+os_dist:
+  - centos/7
+#  - centos/8
+
+  

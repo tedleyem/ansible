@@ -1,0 +1,12 @@
+# Create and configure the VM(s)
+Vagrant.configure(2) do |config|
+
+  config.vm.hostname = "docker-host"
+
+  # Spin up your own box
+  # and then provision it with Docker
+  config.vm.box = "ubuntu/focal"
+  config.vm.provision "docker"
+
+end
+

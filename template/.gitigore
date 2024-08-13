@@ -1,0 +1,45 @@
+# Ansible 
+*.retry
+
+
+
+# OS-specific
+.DS_Store
+
+# Editor swapfiles
+.*.sw?
+*~
+
+# Vagrant stuff
+*.vagrant/
+*.vagrant
+*/.vagrant
+*/.vagrant/
+test/.vagrant
+/.vagrant
+.vagrant/
+/vagrant
+
+# Bundler/Rubygems
+*.gem
+.bundle
+pkg/*
+/Gemfile.lock
+test/tmp/
+/exec
+.ruby-bundle
+vendor/bundle
+
+
+# Python
+*.pyc
+
+# Rubinius
+*.rbc
+
+# IDE junk
+.idea/*
+*.iml
+.project
+.vscode
+

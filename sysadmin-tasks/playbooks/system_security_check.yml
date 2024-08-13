@@ -1,0 +1,20 @@
+--- 
+- name: Check system for updates (yum)
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - ../vars/main.yml
+  tasks:     
+    - name: checking updates
+      yum:
+        security: yes
+        state: latest
+      check_mode: yes
+      register: yum_output
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+    - name: show that yum output
+      debug:
+        var: yum_output
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+

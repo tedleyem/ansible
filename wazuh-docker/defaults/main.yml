@@ -1,0 +1,14 @@
+---
+wazuh_manager_ip: 127.0.0.1
+atomic_art_key: "https://www.atomicorp.com/RPM-GPG-KEY.art.txt"
+atomic_gpg_key: "https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt"
+wazuh_kibana_curl: "https://packages.wazuh.com/wazuhapp/wazuhapp-3.9.3_7.2.0.zip"
+
+use_custom_compose: no
+git_url: "https://github.com/wazuh/wazuh-docker.git -b v3.11.4_7.6.1"
+wazuh_git_url: "https://raw.githubusercontent.com/wazuh/wazuh-docker/v3.11.4_7.6.1/docker-compose.yml"
+#Elasticsearch variables
+elastic_version: 7.6.0
+elastic_repo_version: 7.x
+elk_repo_url: https://artifacts.elastic.co/packages/{{ elastic_repo_version }}/yum
+yum_repo_gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch

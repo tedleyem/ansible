@@ -1,0 +1,16 @@
+[mysqld]
+ndbcluster
+max_connections={{ cnf_max_connections }}
+performance_schema={{ cnf_performance_schema }}
+datadir=/var/lib/mysql-cluster
+socket=/var/lib/mysql/mysql.sock
+default_storage_engine=ndbcluster
+
+
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+{% for host in groups["ndb_cluster_mgm"] %}
+[mysql_cluster]
+ndb-connectstring={{ groups['ndb_cluster_mgm'] | join(",") }}
+{% endfor %}

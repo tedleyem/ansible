@@ -1,0 +1,283 @@
+<!--
+  Wazuh - Manager - Default configuration.
+  More info at: https://documentation.wazuh.com
+  Mailing list: https://groups.google.com/forum/#!forum/wazuh
+-->
+
+<ossec_config>
+ <client>
+   <server>
+     <address>wazuh</address>
+     <address>172.16.120.42</address>
+     <port>1514</port>
+     <protocol>udp</protocol>
+   </server>
+   <config-profile>centos, centos7</config-profile>
+   <notify_time>3600</notify_time>
+   <time-reconnect>60</time-reconnect>
+   <auto_restart>yes</auto_restart>
+   <crypto_method>aes</crypto_method>
+ </client>
+
+ <client_buffer>
+   <!-- Agent buffer options -->
+   <disabled>no</disabled>
+   <queue_size>5000</queue_size>
+   <events_per_second>500</events_per_second>
+ </client_buffer>
+
+  <!-- Policy monitoring -->
+  <rootcheck>
+    <disabled>no</disabled>
+
+    <!-- Frequency that rootcheck is executed - every 12 hours -->
+    <frequency>43200</frequency>
+
+    <rootkit_files>/var/ossec/etc/shared/rootkit_files.txt</rootkit_files>
+    <rootkit_trojans>/var/ossec/etc/shared/rootkit_trojans.txt</rootkit_trojans>
+
+    <system_audit>/var/ossec/etc/shared/system_audit_rcl.txt</system_audit>
+    <system_audit>/var/ossec/etc/shared/system_audit_ssh.txt</system_audit>
+    <system_audit>/var/ossec/etc/shared/cis_debian_linux_rcl.txt</system_audit>
+
+    <skip_nfs>yes</skip_nfs>
+  </rootcheck>
+
+  <wodle name="open-scap">
+    <disabled>no</disabled>
+    <timeout>1800</timeout>
+    <interval>1d</interval>
+    <scan-on-start>yes</scan-on-start>
+
+    <content type="xccdf" path="ssg-debian-8-ds.xml">
+      <profile>xccdf_org.ssgproject.content_profile_common</profile>
+    </content>
+    <content type="oval" path="cve-debian-oval.xml"/>
+  </wodle>
+
+  <wodle name="syscollector">
+    <disabled>no</disabled>
+    <interval>1h</interval>
+    <scan_on_start>yes</scan_on_start>
+    <hardware>yes</hardware>
+    <os>yes</os>
+    <network>yes</network>
+  </wodle>
+
+  <wodle name="vulnerability-detector">
+    <disabled>no</disabled>
+    <interval>1d</interval>
+    <run_on_start>yes</run_on_start>
+    <update_ubuntu_oval interval="60m" version="18,16,14">yes</update_ubuntu_oval>
+    <update_redhat_oval interval="60m" version="7,6,5">yes</update_redhat_oval>
+  </wodle>
+
+  <!-- File integrity monitoring -->
+  <syscheck>
+    <disabled>no</disabled>
+
+    <!-- Frequency that syscheck is executed default every 12 hours -->
+     <!-- Default setting  <frequency>43200</frequency> -->
+     <!--     <frequency>60</frequency>  -->
+    <frequency>43200</frequency>
+    <!-- Files/directories to ignore -->
+
+    <!-- Files/directories on Booking Servers to ignore -->
+    <ignore>/nfs/booking_logs</ignore>
+    <ignore>/mnt/logs</ignore>
+    <ignore>/mnt/apache_logs</ignore>
+    <ignore>/mnt/logs</ignore>
+    <!-- Files/directories on Web Servers to ignore -->
+    <ignore>/var/log/apache</ignore>
+
+    <!-- Files/directories on Bambam to ignore -->
+    <ignore>/export/booking_logs</ignore>
+    <ignore>/export/booking_logs_amex</ignore>
+    <ignore>/export/archive/booking_logs</ignore>
+    <ignore>/export/archive/booking_logs_amex</ignore>
+    <ignore>/export/booking_logs_dev</ignore>
+    <ignore>/export/booking_logs_atl</ignore>
+    <ignore>/export/archive/booking_logs_atl</ignore>
+
+    <!-- Files/directories on CITADEL to ignore -->
+    <ignore>/mnt/archive01_sata</ignore>
+    <ignore>/mnt/archive02_sata</ignore>
+    <ignore>/mnt/archive03_sata</ignore>
+    <ignore>/mnt/archive04_sata</ignore>
+    <ignore>/mnt/archive05_sata</ignore>
+    <ignore>/mnt/archive06_sata</ignore>
+    <ignore>/mnt/archive07_sata</ignore>
+    <ignore>/mnt/archive01_sas</ignore>
+    <ignore>/mnt/archive02_sas2</ignore>
+    <ignore>/mnt/archive03_sas2</ignore>
+    <ignore>/mnt/archive04_sas2</ignore>
+    <ignore>/mnt/apache_logs</ignore>
+    <ignore>/etc/random.seed</ignore>
+
+    <!-- Files/directories to ignore -->
+    <ignore>/etc/mtab</ignore>
+    <ignore>/etc/hosts.deny</ignore>
+    <ignore>/etc/mail/statistics</ignore>
+    <ignore>/etc/random-seed</ignore>
+    <ignore>/etc/random.seed</ignore>
+    <ignore>/etc/adjtime</ignore>
+    <ignore>/etc/httpd/logs</ignore>
+    <ignore>/etc/utmpx</ignore>
+    <ignore>/etc/wtmpx</ignore>
+    <ignore>/etc/cups/certs</ignore>
+    <ignore>/etc/dumpdates</ignore>
+    <ignore>/etc/svc/volatile</ignore>
+    <ignore>/sys/kernel/security</ignore>
+    <ignore>/sys/kernel/debug</ignore>
+
+    <scan_on_start>yes</scan_on_start>
+
+    <!-- File types to ignore -->
+  <!--  <ignore type="sregex">.log$|.swp$</ignore> -->
+    <ignore type="sregex">.swp$</ignore>
+
+    <!-- Check the file, but never compute the diff -->
+    <nodiff>/etc/ssl/private.key</nodiff>
+
+    <!-- Generate alert when new file detected -->
+    <alert_new_files>yes</alert_new_files>
+
+    <!-- Don't ignore files that change more than 3 times -->
+    <auto_ignore>no</auto_ignore>
+
+    <!-- Directories to check  (perform all possible verifications) -->
+    <directories check_all="yes">/etc,/usr/bin,/usr/sbin,/opt/,/home/,</directories>
+    <directories check_all="yes">/bin,/sbin,/boot,/var/,</directories>
+
+    <skip_nfs>yes</skip_nfs>
+  </syscheck>
+
+  <!-- Active response -->
+  <global>
+    <white_list>127.0.0.1</white_list>
+    <white_list>^localhost.localdomain$</white_list>
+    <white_list>10.0.0.2</white_list>
+  </global>
+
+  <command>
+    <name>disable-account</name>
+    <executable>disable-account.sh</executable>
+    <expect>user</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <command>
+    <name>restart-ossec</name>
+    <executable>restart-ossec.sh</executable>
+    <expect></expect>
+  </command>
+
+  <command>
+    <name>firewall-drop</name>
+    <executable>firewall-drop.sh</executable>
+    <expect>srcip</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <command>
+    <name>host-deny</name>
+    <executable>host-deny.sh</executable>
+    <expect>srcip</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <command>
+    <name>route-null</name>
+    <executable>route-null.sh</executable>
+    <expect>srcip</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <command>
+    <name>win_route-null</name>
+    <executable>route-null.cmd</executable>
+    <expect>srcip</expect>
+    <timeout_allowed>yes</timeout_allowed>
+  </command>
+
+  <!--
+  <active-response>
+    active-response options here
+  </active-response>
+  -->
+
+  <!-- Log analysis -->
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/ossec/logs/active-responses.log</location>
+  </localfile>
+
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/messages</location>
+  </localfile>
+
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/auth.log</location>
+  </localfile>
+
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/syslog</location>
+  </localfile>
+
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/syslog/messages</location>
+  </localfile>
+
+  <localfile>
+    <log_format>command</log_format>
+    <command>df -P</command>
+    <frequency>360</frequency>
+  </localfile>
+
+  <localfile>
+    <log_format>full_command</log_format>
+    <command>netstat -tan |grep LISTEN |grep -v 127.0.0.1 | sort</command>
+    <frequency>360</frequency>
+  </localfile>
+
+  <localfile>
+    <log_format>full_command</log_format>
+    <command>last -n 5</command>
+    <frequency>360</frequency>
+  </localfile>
+
+  <ruleset>
+    <!-- Default ruleset -->
+    <decoder_dir>ruleset/decoders</decoder_dir>
+    <rule_dir>ruleset/rules</rule_dir>
+    <rule_exclude>0215-policy_rules.xml</rule_exclude>
+    <list>etc/lists/audit-keys</list>
+
+    <!-- User-defined ruleset -->
+    <decoder_dir>etc/decoders</decoder_dir>
+    <rule_dir>etc/rules</rule_dir>
+  </ruleset>
+
+  <!-- Configuration for ossec-authd
+       To enable this service, run:
+       ossec-control enable auth
+  -->
+  <auth>
+    <disabled>no</disabled>
+    <port>1515</port>
+    <use_source_ip>yes</use_source_ip>
+    <force_insert>yes</force_insert>
+    <force_time>0</force_time>
+    <purge>yes</purge>
+    <use_password>no</use_password>
+    <!-- <ssl_agent_ca></ssl_agent_ca> -->
+    <ssl_verify_host>no</ssl_verify_host>
+    <ssl_manager_cert>/var/ossec/etc/sslmanager.cert</ssl_manager_cert>
+    <ssl_manager_key>/var/ossec/etc/sslmanager.key</ssl_manager_key>
+    <ssl_auto_negotiate>no</ssl_auto_negotiate>
+  </auth>
+</ossec_config>

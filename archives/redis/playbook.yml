@@ -1,0 +1,6 @@
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "{{ playbook_dir }}/defaults/main.yml"
+    - import_tasks: "{{ playbook_dir }}/tasks/main.yml"

@@ -1,0 +1,7 @@
+- hosts: monitor
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - import_tasks: "1.update.yml"
+    - import_tasks: "2.restart.yml"

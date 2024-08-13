@@ -1,0 +1,17 @@
+--- 
+- name: Update system packages 
+  hosts: all
+  gather_facts: true
+  tasks: 
+    - name: Install all software package updates
+      package:
+        name: "*"
+        state: "latest" 
+      when: ansible_facts['os_family'] == "Debian"
+
+    - name: Check system packages (Redhat/CentOS)
+      yum:
+        list: installed
+      register: result
+      become: true 
+      when: ansible_facts['os_family'] == "RedHat"

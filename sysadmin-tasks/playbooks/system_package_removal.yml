@@ -1,0 +1,22 @@
+--- 
+- name: Print Todays system logs 
+  hosts: all
+  gather_facts: true
+  become: true
+  vars_files:
+    - ../vars/main.yml
+  tasks:  
+    - name: Remove specified software packages
+      package:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ purged_packages }}"
+      when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+
+    - name: Remove specified software packages
+      package:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ purged_packages }}"
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+

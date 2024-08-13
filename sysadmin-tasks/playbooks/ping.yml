@@ -1,0 +1,9 @@
+--- 
+- name: Checking connectivity with PING
+  hosts: all
+  gather_facts: true
+  tasks:     
+
+    - name: Heat Check
+      ansible.builtin.ping:
+ 
