@@ -2,11 +2,11 @@ Vagrant.configure("2") do |config|
 #required_version ">= 1.8.0"
 # Defining the VM
   vms = [
-    { name: "ubuntu2004", box: "generic/debian12", ip: "192.168.56.10" },
-    { name: "ubuntu2204", box: "generic/ubuntu2204", ip: "192.168.56.11" },
+    { name: "debian12", box: "generic/debian12", ip: "192.168.56.10" },
+    { name: "centos9", box: "generic/centos9s", ip: "192.168.56.11" },
     { name: "ubuntu2404", box: "generic/ubuntu2404", ip: "192.168.56.12" },
     { name: "rhel8", box: "generic/rhel8", ip: "192.168.56.14" },
-    { name: "rhel9", box: "genereal/rhel9", ip: "192.168.56.15" }
+    { name: "rhel9", box: "generic/rhel9", ip: "192.168.56.15" }
   ]
   # Configure VM settings 
   vms.each do |vm|
@@ -44,9 +44,16 @@ Vagrant.configure("2") do |config|
   # Generate Ansible inventory file after all VMs are up
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "docker-setup/playbook.yml"
-    ansible.inventory_path = "inventory"
+    #ansible.inventory_path = "inventory"
     ansible.limit = "all"
     ansible.host_key_checking = false
+    ansible.host_vars = {
+      "debian12" => {"http_port" => 22},
+      "ubuntu2204" => {"http_port" => 22},
+      "ubuntu2404" => {"http_port" => 22},
+      "rhel8" => {"http_port" => 22},
+      "rhel9" => {"http_port" => 22}
+    }
     ansible.extra_vars = {
       ansible_user: "vagrant",
       ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
