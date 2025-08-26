@@ -1,0 +1,13 @@
+--- 
+- name: Check Listed Running Services
+  hosts: all
+  gather_facts: true
+  tasks:  
+    - name: Check list of all running services 
+      command: systemctl list-units --type=service
+      register: services
+      ignore_errors: yes
+
+    - name: showing report
+      debug:
+        msg: "{{ services.stdout | to_nice_json  }}"

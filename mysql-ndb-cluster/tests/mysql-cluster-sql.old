@@ -1,0 +1,64 @@
+- name: Add Mysql Repo
+  template:
+    src: mysql-community.repo.j2
+    dest: /etc/yum.repos.d/mysql-community.repo
+    mode: 0644
+  become: true
+
+- name: Install dependancies
+  yum:
+    name: ['perl-IO-Compress', 'perl-Net-LibIDN', 'perl-IO-String', 'perl-DBI', 'perl-Net-Daemon', ]
+    state: present
+  become: true
+
+- name: Update pip for python dependancies
+  command: "pip install --upgrade pip"
+  become: true
+
+# This installs a list of packages and
+# creates the mysql user
+# https://dev.mysql.com/doc/refman/8.0/en/mysql-cluster-install-linux-rpm.html
+- name: Install mysql-cluster-community-server
+  yum:
+    name: mysql-cluster-community-server
+    state: present
+  become: true
+
+- name: Create mysql log file
+  file:
+    path: /var/log/mysqld.log
+    owner: mysql
+    group: mysql
+    mode: 0644
+  become: true
+
+- import_tasks: firewall.yml
+  vars:
+    mysql_custom_port: "{{ mysql_port }} "
+
+- name: Set permissions for mysql data dir
+  file:
+    path: /var/lib/mysql/
+    owner: mysql
+    group: mysql
+    recurse: yes
+    mode: 0755
+
+- name: Install config BOCA
+  template:
+    src: "my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope != "atl"
+
+- name: Install config ATL
+  template:
+    src: "atl/my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope == "atl"
+
+# Setting up Mysql secure connection
+- import_tasks: "secure.yml"

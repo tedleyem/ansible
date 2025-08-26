@@ -1,0 +1,5 @@
+- name: Restart Nagios
+  command: "/etc/rc.d/init.d/nagios reload"
+  register: restart_check1
+
+- debug: msg="{{ restart_check1.stdout.split('\n')  }}"

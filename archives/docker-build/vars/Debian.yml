@@ -1,0 +1,23 @@
+---
+clean_cache: "apt-get autoclean"
+docker_pkg: ['docker', 'docker-compose']
+packages_base:
+    - libselinux1
+    - libselinux-dev
+    - mailutils
+    - make
+    - snmpd
+    - openssl
+    - ncdu
+    - nano
+    - neofetch
+    - ncurses
+    - policycoreutils
+    - python-pip
+    - python-pycurl
+    - python-setuptools
+    - rkhunter
+    - rsyslog
+    - samba-common
+    - usbguard
+    - wget

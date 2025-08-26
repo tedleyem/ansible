@@ -1,0 +1,85 @@
+- name: Copy upgradetool repo
+  template:
+    src: "upgradetool.repo"
+    dest: "/etc/yum.repos.d/upgradetool.repo"
+  become: true
+
+- name: install RPM-GPG-KEY-CentOS-6
+  rpm_key:
+    state: present
+    key: http://mirror.centos.org/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+  become: true
+
+- name: Temporarily remove Duo repo
+  file:
+    state: absent
+    path: "/etc/yum.repos.d/duosecurity.repo"
+  become: true
+
+- name: Force install the CentOS RPMs we downloaded
+  shell: rpm -Uvh --force *.rpm
+  args:
+    chdir: /temp/centos/
+  ignore_errors: True
+  become: true
+
+- name: Clean up yum one more time and then upgrade
+  shell: yum clean all
+  become: true
+
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    enabled: yes
+    gpgcheck: no
+  become: true
+
+- name:  Update cache
+  yum:
+    update_cache: yes
+  become: true
+
+- name: Install EPEL Release
+  yum:
+    name: epel-release
+    state: latest
+  become: true
+
+- name: update all packages
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*,network*
+  become: true
+
+- name: (PKG) Install rvlx standard packges Part 1 Auth
+  package:
+    name: ['postfix', 'pexpect', 'yum-utils', 'ntpdate', 'chrony', 'htop', 'policycoreutils-python', 'net-snmp', 'net-snmp-utils']
+    state: present
+
+- name: (PKG) Install standard packges Part 2 LIbs
+  package:
+    name: ['samba-common', 'samba-common-tools', 'spice-glib-devel', 'chrony', 'polkit-devel', 'libselinux', 'libselinux-utils', 'net-snmp', 'rsyslog', 'rsyslog-snmp', 'audit', 'audit-libs',]
+    state: present
+   #  when: ansible_distribution == 'CentOS'
+
+- name: (PKG) Install python specific packges
+  package:
+    name: ['python-pip', 'python2-pyvmomi', 'policycoreutils-python', 'python-pycurl', 'python-setuptools', 'python-pycurl',]
+    state: present
+
+- name:  Update BUGFIXES
+  yum:
+    bugfix: yes
+    state: latest
+    update_cache: yes
+  become: true
+
+- name:  Update SECURITY
+  yum:
+    security: yes
+    state: latest
+    update_cache: yes
+  become: true

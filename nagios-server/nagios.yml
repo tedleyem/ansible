@@ -1,0 +1,31 @@
+---
+#
+# Playbook to install nagios server, clients and
+# generate service checks based on Ansible inventory
+#
+
+# we need to collect facts from all hosts we reference
+# https://github.com/ansible/ansible/issues/9260
+# we skip switches/oobservers because they normally don't
+# have python installed.
+
+# role for nagios clients via NRPE
+- hosts: dolly01
+#  remote_user: "{{ ansible_system_user }}"
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+  roles:
+    - { role: nagios_client }
+    - { role: firewall_client, when: manage_firewall_client|bool }
+
+# role for nagios server
+- hosts: nagios
+#  remote_user: "{{ ansible_system_user }}"
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+  roles:
+    - { role: nagios }
+    - { role: firewall, when: manage_firewall|bool }
+    - { role: instructions }

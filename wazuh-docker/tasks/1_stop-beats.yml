@@ -1,0 +1,135 @@
+---
+# find running auditbeat process and kill
+- name: Get running processes
+  shell: "ps -ef | grep -v grep | grep -w auditbeat | awk '{print $2}'"
+  register: auditbeat_processes
+  become: true
+
+- name: Kill running processes
+  shell: "kill {{ item }}"
+  with_items: "{{ auditbeat_processes.stdout_lines }}"
+  become: true
+
+- name: Waiting until all running processes are killed
+  wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ auditbeat_processes.stdout_lines }}"
+  become: true
+
+# find running metricbeat process and kill
+- name: Get running processes
+  shell: "ps -ef | grep -v grep | grep -w metricbeat | awk '{print $2}'"
+  register: metricbeat_processes
+  become: true
+
+- name: Kill running processes
+  shell: "kill {{ item }}"
+  with_items: "{{ metricbeat_processes.stdout_lines }}"
+  become: true
+
+- name: Waiting until all running processes are killed
+  wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ metricbeat_processes.stdout_lines }}"
+  become: true
+
+# find running packetbeat process and kill
+- name: Get running processes
+  shell: "ps -ef | grep -v grep | grep -w packetbeat | awk '{print $2}'"
+  register: packetbeat_processes
+
+- name: Kill running processes
+  shell: "kill {{ item }}"
+  with_items: "{{ packetbeat_processes.stdout_lines }}"
+  become: true
+
+- name: Waiting until all running processes are killed
+  wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ packetbeat_processes.stdout_lines }}"
+  become: true
+
+# find running heartbeat process and kill
+- name: Get running processes
+  shell: "ps -ef | grep -v grep | grep -w heartbeat | awk '{print $2}'"
+  register: heartbeat_processes
+  become: true
+
+- name: Kill running processes
+  shell: "kill {{ item }}"
+  with_items: "{{ heartbeat_processes.stdout_lines }}"
+  become: true
+
+- name: Waiting until all running processes are killed
+  wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ heartbeat_processes.stdout_lines }}"
+  become: true
+
+- name: Uninstall Metricbeat
+  yum:
+    name: metricbeat
+    state: absent
+  become: true
+
+- name: Uninstall auditbeat
+  yum:
+    name: auditbeat
+    state: absent
+  become: true
+
+- name: Uninstall heartbeat-elastic
+  yum:
+    name: heartbeat-elastic
+    state: absent
+  become: true
+
+- name: Uninstall packetbeat
+  yum:
+    name: packetbeat
+    state: absent
+  become: true
+
+- name: Clean auditbeat
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    -"/usr/share/auditbeat"
+    -"/var/log/auditbeat"
+    -"/etc/auditbeat"
+  become: true
+
+- name: Clean metricbeat
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    -"/usr/share/metricbeat"
+    -"/var/log/metricbeat"
+    -"/etc/metricbeat"
+  become: true
+
+- name: Clean packetbeat
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    -"/usr/share/packetbeat"
+    -"/var/log/packetbeat"
+    -"/etc/packetbeat"
+  become: true
+
+- name: Clean heartbeat
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    -"/usr/share/heartbeat"
+    -"/var/log/heartbeat"
+    -"/etc/heartbeat"
+  become: true

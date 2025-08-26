@@ -1,0 +1,12 @@
+# define host Ip to add to memcache config
+- debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+- name: check if firewalld exists
+  stat:
+    path: /etc/sysconfig/firewalld
+  register: firewall_rules
+- import_tasks: "setup_requirements.yml"
+- import_tasks: "1.install.yml"
+- import_tasks: "2.copy.yml"
+- import_tasks: "3.firewalld.yml"
+- import_tasks: "3.iptables.yml"
+- import_tasks: "4.start.yml"

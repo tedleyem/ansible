@@ -1,0 +1,19 @@
+# .github/workflows/ansible-lint.yml
+name: ansible-lint
+on:
+  push:
+    branches:
+#      - '*'  # matches every branch that doesn't contain a '/'
+#      - '*/*'  # matches every branch 
+      - 'role/*' # matches every branch that starts with 'ansible-role' 
+      - '!master'  # excludes master
+
+  pull_request:
+    branches: ["main", "role/*"]
+jobs:
+  build:
+    name: Ansible Lint # Name used as status check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main # you can use version tag instead of 'main'

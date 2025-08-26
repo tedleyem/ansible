@@ -1,0 +1,20 @@
+- name: Remove RHN packages
+  package:
+    name: ['rhnlib', 'abrt-plugin-bugzilla', 'redhat-release-notes*', 'redhat-release-server-6Server', 'redhat-indexhtml',]
+    state: absent
+  become: true
+  ignore_errors: true 
+
+#- name: Remove redhat-indexhtml
+#  shell: rpm -e --nodeps redhat-release-server-6Server redhat-indexhtml
+#  ignore_errors: True
+
+- name: Remove left over RHEL subscription
+  shell: subscription-manager clean
+  become: true
+
+- name: remove RHN Subscription Manager
+  yum:
+    name: subscription-manager
+    state: absent
+  become: true

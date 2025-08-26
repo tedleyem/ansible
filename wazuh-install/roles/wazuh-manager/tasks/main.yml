@@ -1,0 +1,53 @@
+---
+#- include: redhat-setup.yml
+#  when: ansible_distribution == "RedHat"
+
+# Copy and install new repos and packages
+- name:  Copy Atomic Repos
+  template:
+    src: "repo/atomic.repo.j2"
+    dest: "/etc/yum.repos.d/atomic.repo"
+    mode: 0644
+  become: true
+
+# Copy and install new repos and packages
+- name:  Copy Wazuh Repos
+  template:
+    src: "repo/wazuh.repo.j2"
+    dest: "/etc/yum.repos.d/wazuh.repo"
+    mode: 0644
+  become: true
+
+
+#Install atomiccorp keys for wazuh dependancies
+- name: Import Atomicorp GPG Keys
+  rpm_key:
+    state: present
+    key: "{{ item }}"
+  with_items:
+    - "{{ atomic_art_key }}"
+    - "{{ atomic_gpg_key }}"
+
+# Remove old versions of ossec
+- name:  remove ossec-hids-agent and ossec-hids
+  yum:
+    name: ['ossec-hids', 'ossec-hids-agent']
+    state: absent
+
+- name:  Install wazuh and filebeat pci pacakges
+  yum:
+    name: ['wazuh-manager', 'filebeat']
+    state: present
+  become: true
+
+- name: Start Wazuh Manager
+  service:
+    name: wazuh-manager
+    state: started
+    enabled: yes
+  become: true
+
+#install kibana plugin
+- name: Insatll  kibana plugin for Wazuh Manager
+  command: "sudo -u kibana NODE_OPTIONS= --max-old-space-size=3072 /usr/share/kibana/bin/kibana-plugin install {{ wazuh_kibana_curl }}"
+  become: true

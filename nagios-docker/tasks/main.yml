@@ -1,0 +1,5 @@
+
+# Install dependancies
+#- import_tasks: "_setup.yml"
+- import_tasks: "dock_network.yml"
+- import_tasks: "dock_nagios.yml"

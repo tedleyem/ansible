@@ -1,0 +1,35 @@
+- name: Download CentOS6 GPG-KEY
+  get_url:
+    url: http://mirror.centos.org/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+    dest: /temp/centos
+  become: true
+
+- name: Download Packages/centos-release-6-10.el6.centos.12.3.x86_64.rpm
+  get_url:
+    url: http://mirror.centos.org/centos/6/os/x86_64/Packages/centos-release-6-10.el6.centos.12.3.x86_64.rpm
+    dest: /temp/centos
+  become: true
+
+- name: Download Packages/centos-indexhtml-6-2.el6.centos.noarch.rpm
+  get_url:
+    url: http://mirror.centos.org/centos/6/os/x86_64/Packages/centos-indexhtml-6-2.el6.centos.noarch.rpm
+    dest: /temp/centos
+  become: true
+
+- name: Download Packages/yum-3.2.29-81.el6.centos.noarch.rpm
+  get_url:
+    url: http://mirror.centos.org/centos/6/os/x86_64/Packages/yum-3.2.29-81.el6.centos.noarch.rpm
+    dest: /temp/centos
+  become: true
+
+- name: Download Packages/yum-plugin-fastestmirror-1.1.30-41.el6.noarch.rpm
+  get_url:
+    url: http://mirror.centos.org/centos/6/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.30-41.el6.noarch.rpm
+    dest: /temp/centos
+  become: true
+
+- name: Import RPM-GPG-KEY-CentOS-6
+  rpm_key:
+    state: present
+    key: http://mirror.centos.org/centos/6/os/x86_64/RPM-GPG-KEY-CentOS-6
+  become: true

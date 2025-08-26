@@ -1,0 +1,13 @@
+- import_tasks: "1_check_dockerhub.yml"
+- import_tasks: "2_build_local_container.yml"
+- import_tasks: "2_build_base_image.yml"
+  when: build_base_images == "yes"
+#- import_tasks: "3_check_and_push.yml"
+#- debug: msg="PLAYBOOK COMPLETED"
+
+# add checks for using custom dockerfile
+# finish and test docker registry check
+# create docker registry if not found
+# test push to docker registry
+# add to ansible galaxy
+# add to blog site

@@ -1,0 +1,39 @@
+[all:vars]
+log_base_path=/tmp
+test_environment=true
+
+#--Networking----------------
+localhost ansible_connection=local
+
+[net-docks]
+dolly[01:03] image="<user-name>/ansible-node" ansible_connection=docker
+dolly[04:06] image="<user-name>/ubuntu-node" ansible_connection=docker
+
+[nagios]
+dolly01
+dolly
+
+[memcache]
+dolly01
+dolly02
+
+[redis-ha:slaveren]
+redis
+sentinel
+
+[redis]
+dolly redis-role=master
+dolly2 redis-role=slave
+
+
+[redis-nodes]
+dolly redis-role=master
+dolly2 redis-role=slave
+dolly3 redis-role=sentinel
+
+#dolly redis-role=master redis-role=master redis-role=sentinel
+#dolly2 redis-role=slave redis-role=slave redis-role=sentinel
+#dolly3 redis-role=sentinel redis-role=sentinel
+
+[sentinel]
+dolly3 redis-role=sentinel

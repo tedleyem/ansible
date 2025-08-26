@@ -1,0 +1,17 @@
+---
+- hosts: all
+#  vars:
+#    java_packages:
+#      - java-1.8.0-openjdk
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir }}/defaults/main.yml"
+  roles:
+    - { role: setup }
+    - { role: java }
+    - { role: elasticsearch }
+    - { role: logstash }
+    - { role: kibana }
+    - { role: xpack, when: ((install_elasticsearch_xpack|bool) or (install_kibana_xpack|bool) or (install_logstash_xpack|bool)) }
+    - { role: firewall, when: manage_firewall|bool }
+    - { role: instructions }

@@ -1,0 +1,26 @@
+---
+epel_repo: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+docker_pkg: ['docker', 'docker-compose']
+clean_cache: "yum makecache fast"
+packages_base:
+    - libselinux
+    - libselinux-utils
+    - mailx
+    - make
+    - net-snmp
+    - net-snmp-utils
+    - openssl
+    - pexpect
+    - policycoreutils-python  
+    - python-pip
+    - python-pycurl
+    - python-setuptools
+    - rkhunter
+    - rsyslog
+    - samba-common
+    - samba-common-tools
+    - sysstat
+    - usbguard
+    - usbguard-devel
+    - wget
+    - yum-utils

@@ -1,0 +1,47 @@
+---
+- name: Check if systemd dir exists
+  stat:
+    path: /etc/systemd
+  register: systemd_check
+
+- name: systemd daemon reload
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: systemd_check is success
+  ignore_errors: true
+#fails in docker container
+
+- name: Restart elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: true
+  become: true
+
+- name: Restart Logstash
+  service:
+    name: logstash
+    state: started
+    enabled: true
+  become: true
+
+- name: Restart Kibana
+  service:
+    name: kibana
+    state: started
+    enabled: true
+  become: true
+
+- name: Print SSL certificate post-setup information
+  debug: msg="Filebeat SSL Certificate available at http://{{ ansible_fqdn }}:{{ elk_server_ssl_cert_port }}/beat-forwarder.crt"
+
+- name: Print SSL key post-setup information
+  debug: msg="Filebeat SSL Certificate key is located at http://{{ ansible_fqdn }}:{{ elk_server_ssl_cert_port }}/beat-forwarder.key"
+
+- name: Print X-Pack instructions
+  debug: msg="*** 1A) (X-Pack only) Kibana account credentials login with elastic/{{xpack_elastic_user_password}} ***"
+  when: install_kibana_xpack|bool
+
+- name: Print login url instructions
+  debug: msg="*** 1) Navigate to http://{{ ansible_fqdn }}:{{ kibana_server_port }}"

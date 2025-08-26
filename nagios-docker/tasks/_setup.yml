@@ -1,0 +1,36 @@
+---
+- name: Ensure required vars are defined
+  fail: msg="docker_image_default is required"
+  when: "docker_image_default is not defined"
+
+- name: Gather facts
+  setup:
+
+#- name: Create docker volume data dir
+#  file:
+#    path: "{{ item }}"
+#    state: directory
+#  with_items:
+#    - "{{ docker_volumes }}"
+#  become: true
+
+# Install Docker and docker-compose .
+- name: Install docker packages
+  package:
+    name: "{{ docker_pkgs }}"
+    state: present
+#  become: true
+
+# Install python based docker packages 2.x
+#- name: Install docker packages for python 2.7
+#  pip:
+#    name:
+#      - docker>4.1.0
+#      - docker-compose>1.17.1
+#    executable: pip2.7
+
+# Install python based docker packages
+- name: "Install docker packages for python {{ docker_python_pip_ver }}"
+  pip:
+    name: "{{ docker_pip3x_pkgs }}"
+    executable: "{{ docker_python_pip_ver }}"

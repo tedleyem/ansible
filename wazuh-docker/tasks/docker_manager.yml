@@ -1,0 +1,77 @@
+---
+- name: open port 1514
+  command: "firewall-cmd --zone=public --add-port=1514/tcp --permanent"
+  become: true
+- name: open port 1515
+  command: "firewall-cmd --zone=public --add-port=1515/tcp --permanent"
+  become: true
+- name: open port 514
+  command: "firewall-cmd --zone=public --add-port=514/tcp --permanent"
+  become: true
+- name: open port 55000
+  command: "firewall-cmd --zone=public --add-port=55000/tcp --permanent"
+  become: true
+- name: open port 5200
+  command: "firewall-cmd --zone=public --add-port=5200/tcp --permanent"
+  become: true
+- name: open port 9200
+  command: "firewall-cmd --zone=public --add-port=9200/tcp --permanent"
+  become: true
+- name: open port 80
+  command: "firewall-cmd --zone=public --add-port=80/tcp --permanent"
+  become: true
+- name: open port 443
+  command: "firewall-cmd --zone=public --add-port=443/tcp --permanent"
+  become: true
+- name: Reload firewall configuration
+  command: "firewall-cmd --reload"
+  become: true
+
+- name: Install docker required packages
+  package:
+    name: ['curl','git','docker','docker-compose',]
+    state: present
+  become: true
+
+- name: download {{ wazuh_git_url }}
+  command: "curl -so docker-compose.yml {{ wazuh_git_url }} "
+  args:
+    chdir: /opt
+  become: true
+
+- name: download {{ git_url}}
+  command: "git clone {{ git_url}} --single-branch"
+  args:
+    chdir: /opt
+  become: true
+  ignore_errors: true
+
+# Copy and install new repos and packages
+- name:  Copy docker-compose.yml
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/opt/"
+  become: true
+  when: use_custom_compose == "yes"
+
+- name:  Enable Docker
+  command: "systemctl enable docker"
+  become: true
+
+- name:  Start Docker Service
+  command: "systemctl start docker"
+  become: true
+
+- name:  Run Docker Compose --detached 
+  command: "docker-compose up -d"
+  args:
+    chdir: /opt
+  become: true
+
+- name: check running containers
+  command: "docker ps"
+  become: true
+  register: docker_ps
+
+- debug:
+    msg: "{{ docker_ps }}"

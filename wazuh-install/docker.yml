@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "{{ playbook_dir }}/defaults/main.yml"
+  tasks:
+# https://documentation.wazuh.com/3.11/docker/wazuh-container.html#usage
+
+command: firewall-cmd --zone=public --add-port=1514/tcp --permanent
+command: firewall-cmd --zone=public --add-port=1515/tcp --permanent
+command: firewall-cmd --zone=public --add-port=514/tcp --permanent
+command: firewall-cmd --zone=public --add-port=55000/tcp --permanent
+command: firewall-cmd --zone=public --add-port=5200/tcp --permanent
+command: firewall-cmd --zone=public --add-port=9200/tcp --permanent
+command: firewall-cmd --zone=public --add-port=80tcp --permanent
+command: firewall-cmd --zone=public --add-port=443/tcp --permanent
+command: firewall-cmd --reload
+command: curl -so docker-compose.yml https://raw.githubusercontent.com/wazuh/wazuh-docker/v3.11.4_7.6.1/docker-compose.yml
+command: git clone https://github.com/wazuh/wazuh-docker.git -b v3.11.4_7.6.1 --single-branch
+command: systemctl enable docker
+command: systemctl start docker 
+command: docker-compose up

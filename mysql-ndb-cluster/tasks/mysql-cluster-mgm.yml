@@ -1,0 +1,45 @@
+- name: Download binaries
+  get_url:
+    url: "{{ mysql_tar_url }}"
+    dest: /var/tmp
+    #mode: '0440'
+
+- name: Extract binaries
+  unarchive:
+    src: "/var/tmp/{{ mysql_tar }}"
+    dest: "/var/tmp/"
+    remote_src: yes
+  become: true
+
+- name: Install nbd binaries
+  command: install ndb_mgmd ndb_mgm /usr/local/bin/ chdir=/var/tmp/mysql-cluster-gpl-7.3.4-linux-glibc2.5-x86_64/bin/ creates=/usr/local/bin/ndb_mgmd
+  become: true
+
+- name: Install init file
+  template:
+    src: "ndb_mgmd.init"
+    dest: "/etc/init.d/ndb_mgmd"
+  become: true
+
+- name: Activate ndb_mgmd init file
+  service:
+    name: ndb_mgmd
+    enabled: yes
+  become: true
+
+- name: Create data dir /var/lib/mysql-cluster
+  file:
+    path: /var/lib/mysql-cluster
+    mode: 0644
+    state: directory
+  become: true
+
+- name: Copy config
+  template:
+    src: "config.ini.j2"
+    dest: /var/lib/mysql-cluster/config.ini
+  become: true
+
+- name: Initialize ndb_mgmd
+  command: ndb_mgmd -f /var/lib/mysql-cluster/config.ini --initial --config-dir=/var/lib/mysql-cluster/ creates=/var/lib/mysql-cluster/ndb_1_cluster.log
+  become: true

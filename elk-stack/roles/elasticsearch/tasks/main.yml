@@ -1,0 +1,64 @@
+---
+- name: Install libsemanage-python and dependencies
+  yum:
+    name: libsemanage-python
+  become: true
+
+- name: Copy templated elasticsearch.repo
+  template:
+    src: elasticsearch.repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    mode: 0644
+  become: true
+
+- name: Install elasticsearch and openjdk
+  yum:
+    name: [elasticsearch, java-openjdk-headless]
+    state: present
+  become: true
+
+- name: Copy templated elasticsearch.yml
+  template:
+    src: "elasticsearch.yml.j2"
+    dest: "/etc/elasticsearch/elasticsearch.yml"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0660
+  become: true
+
+- import_tasks: heap-size.yml
+
+- name: Change file ownership of {{ es_path_data }}
+  file:
+    path: "{{ es_path_data }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+  become: true
+
+- name: Change file ownership of {{ es_path_logs }}
+  file:
+    path: "{{ es_path_logs }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+  become: true
+
+- name: Copy elasticsearch jvm.options
+  template:
+    src: "jvm.options.j2"
+    dest: "/etc/elasticsearch/jvm.options"
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0660
+  become: true
+
+- import_tasks: open_ssl.yml
+  when: open_ssl_check == "yes"
+
+- name: Setup elasticsearch service to autostart
+  service:
+    name: elasticsearch
+    state: started
+    enabled: true
+  become: true

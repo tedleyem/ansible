@@ -1,0 +1,7 @@
+- name: Add Port 1514 to Firewall
+  firewalld:
+    port: 1514/tcp
+    zone: public
+    permanent: true
+    state: enabled
+  become: true

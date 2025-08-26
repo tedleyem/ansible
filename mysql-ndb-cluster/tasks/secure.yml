@@ -1,0 +1,44 @@
+# Allow login without root password for mysql
+- name: Set the mySQL environment option
+  command: "systemctl set-environment MYSQLD_OPTS="--skip-grant-tables" "
+
+# Start mysql usig the preset options
+- name: Start MySQLD
+  systemd:
+    name: mysqld
+    state: started
+  become: true
+
+# From within mysql
+#SET GLOBAL validate_password.policy=LOW;
+#SET GLOBAL validate_password.special_char_count=0;
+#SET GLOBAL log_bin_trust_function_creators=1;
+#SHOW VARIABLES LIKE 'validate_password%';
+# CREATE DATABASE CacheCluster;
+# CREATE USER 'cacheuser'@'localhost' IDENTIFIED BY 'j@3g3rm31st3r';
+# GRANT ALL PRIVILEGES ON `CacheCluster`.* TO 'cacheuser'@'%';
+# FLUSH PRIVILEGES;
+
+# import cachecluster
+# may need to use expect command to put in password
+# mysql -u root -p CacheCluster < CacheCluster_2019.sql
+
+ 
+ #- name: Change root user password
+#  command: /usr/local/mysql/bin/mysql -e 'ALTER TABLE mysql.{{ item }} ENGINE=NDBCLUSTER;'
+
+
+# Unset the mySQL envitroment option so it starts normally next time
+#- name: Unset the mySQL environment option
+#  command: "systemctl unset-environment MYSQLD_OPTS"
+#  become: true
+
+ # Stop mysql
+- name: Stop MySQLD
+  systemd:
+    name: mysqld
+    state: stopped
+  become: true
+
+# setup customer cachccluster db info
+- import_tasks: "tasks/configure.yml"

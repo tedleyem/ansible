@@ -1,0 +1,4 @@
+---
+# tasks file for template
+- import_tasks: "ping.yml"
+

@@ -1,0 +1,27 @@
+- hosts: all #change to monitor for testing
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+
+    # COPY FROM MONITOR TO ANSIBLE
+    - name: [nagios] COPY NAGIOS PLUGINS
+      copy:
+        src: /etc/ansible/nagios/plugins/
+        dest: /usr/lib/nagios/plugins/
+        group: nagios
+        owner: nagios
+        force: no
+        mode: "u+x"
+#  delegate_to: monitor.company.com
+
+# Test to copy nagios pluins from playbook
+#    - name: COPY NAGIOS PLUGINS
+#      copy:
+#        src: "{{ item }}"
+#        dest: /usr/lib/nagios/plugins/
+#        group: nagios
+#        owner: nagios
+#        mode: "u+x"
+#      with_fileglob:
+#        - "{{ playbook_dir }}/configs/plugins/*"

@@ -1,0 +1,16 @@
+[Unit]
+Description=Kibana
+StartLimitIntervalSec=30 
+
+[Service]
+Type=simple
+User=kibana
+Group=kibana
+EnvironmentFile=-/etc/default/kibana
+EnvironmentFile=-/etc/sysconfig/kibana
+ExecStart=/usr/share/kibana/bin/kibana "-c /etc/kibana/kibana.yml"
+Restart=always
+WorkingDirectory=/
+
+[Install]
+WantedBy=multi-user.target

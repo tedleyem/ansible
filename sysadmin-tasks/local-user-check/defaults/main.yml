@@ -1,0 +1,7 @@
+---
+# defaults file for user-check
+users:
+  - mail
+  - sys
+  - bin 
+  - root

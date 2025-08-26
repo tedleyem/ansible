@@ -1,0 +1,12 @@
+--- 
+- name: Delete listed users 
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    # purged_user var can be changed in ../var/main.yml
+    - name: Delete User "{{ purged_user }}"      
+      ansible.builtin.user:
+        name: "{{ purged_user }}" 
+        state: absent 

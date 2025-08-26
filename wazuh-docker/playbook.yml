@@ -1,0 +1,6 @@
+- hosts: wazuh
+  become: yes
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+    - import_tasks: "tasks/main.yml"

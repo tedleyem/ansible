@@ -1,0 +1,31 @@
+apiVersion: v1
+clusters:
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://openshift1.example.com:8443
+  name: openshift1.example.com:8443
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://openshift2.example.com:8443
+  name: openshift2.example.com:8443
+contexts:
+- context:
+    cluster: openshift1.example.com:8443
+    namespace: alice-project
+    user: alice/openshift1.example.com:8443
+  name: alice-project/openshift1.example.com:8443/alice
+- context:
+    cluster: openshift1.example.com:8443
+    namespace: joe-project
+    user: alice/openshift1.example.com:8443
+  name: joe-project/openshift1/alice
+current-context: joe-project/openshift1.example.com:8443/alice
+kind: Config
+preferences: {}
+users:
+- name: alice/openshift1.example.com:8443
+  user:
+    token: xZHd2piv5_9vQrg-SKXRJ2Dsl9SceNJdhNTljEKTb8k
+
+
+nshift3/ose-ansible:v3.11

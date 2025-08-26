@@ -1,0 +1,5 @@
+- name: Vagrant init
+  command: "vagrant init {{ os_dist }}"
+  become: true
+
+  

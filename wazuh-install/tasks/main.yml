@@ -1,0 +1,9 @@
+- hosts: all
+  become_user: root
+  become_method: sudo
+  tasks:
+    - import_roles:
+        name: tmeralus.elk_stack
+
+    - import_tasks: wazuh-manager.yml
+    - import_tasks: wazuh-agent.yml 

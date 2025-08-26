@@ -1,0 +1,71 @@
+#- include: redhat-setup.yml
+#  when: ansible_distribution == "RedHat"
+
+# Copy and install new repos and packages
+- name:  Copy Bulk Repos
+  template:
+    src: "{{ item }}"
+    dest: "/etc/yum.repos.d/"
+  with_items:
+    - "repo/wazuh.repo.j2"
+    - "repo/atomic.repo.j2"
+    - "repo/elastic.repo.j2"
+
+#Install atomiccorp keys for wazuh dependancies
+- name: Import Atomicorp GPG Keys
+  rpm_key:
+    state: present
+    key: "{{ item }}"
+  with_items:
+    - "{{ atomic_art_key }}"
+    - "{{ atomic_gpg_key }}"
+
+- name:  remove ossec-hids-agent and ossec-hids
+  yum:
+    name: ['ossec-hids', 'ossec-hids-agent']
+    state: absent
+
+- name:  Install wazuh and filebeat pci pacakges
+  yum:
+    name: ['filebeat', 'wazuh-agent']
+    state: present
+
+- name:  Configure filebeat wazuh-agent
+  template:
+    src: "config/ossec.conf.j2"
+    dest: "/var/ossec/etc/ossec.conf"
+
+- name: Configure filebeat wazuh-agent
+  template:
+    src: "config/wazuh-agent.yml.j2"
+    dest: "/etc/filebeat/filebeat.yml"
+
+- name: Setup system module for Filebeat
+  template:
+    src: "config/system-module.yml.j2"
+    dest: "/etc/filebeat/modules.d/system.yml"
+
+- name: Copy ossec.conf
+  template:
+    src: "config/ossec.conf.j2"
+    dest: "/var/ossec/etc/ossec.conf"
+
+- name: Start ossec-agentd
+  command: /var/ossec/bin/ossec-agentd start
+
+- name: Start Filebeat
+  service:
+    name: filebeat
+    state: started
+    enabled: yes
+
+- name: Connect wazuh-ahent
+  command: "/var/ossec/bin/agent-auth -m {{ wazuh_manager_ip }}"
+  
+- debug: msg="If you made it here your in the clear"
+
+#- name: Start Wazuh Agent
+#  service:
+#    name: wazuh-agent
+#    state: started
+#    enabled: yes

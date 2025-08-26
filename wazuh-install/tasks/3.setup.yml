@@ -1,0 +1,65 @@
+# Copy and install new repos and packages
+- name: Copy Bulk Repos
+  copy:
+    src: "{{ item }}"
+    dest: /etc/yum.repos.d/
+  with_items:
+    - "{{ playbook_dir}}/files/repo/wazuh.repo"
+    - "{{ playbook_dir}}/files/repo/atomic.repo"
+    - "{{ playbook_dir}}/files/repo/elastic.repo"
+
+#Install atomiccorp keys for wazuh dependancies
+- name: Import Wazuh GPG Key 1/2
+  rpm_key:
+    state: present
+    key: https://www.atomicorp.com/RPM-GPG-KEY.art.txt
+
+- name: Import Wazuh GPG Key 2/2
+  rpm_key:
+    state: present
+    key: https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt
+
+- name:  remove ossec-hids-agent and ossec-hids
+  yum:
+    name: ['ossec-hids', 'ossec-hids-agent']
+    state: absent
+
+- name:  Install wazuh and filebeat pci pacakges
+  yum:
+    name: ['filebeat', 'wazuh-agent']
+    state: present
+
+- name: Configure filebeat wazuh-agent
+  copy:
+    src: "/config/wazuh-agent.yml"
+    dest: "/etc/filebeat/filebeat.yml"
+
+- name: Setup system module for Filebeat
+  copy:
+    src: "/config/system-module.yml"
+    dest: "/etc/filebeat/modules.d/system.yml"
+
+- name: Copy ossec.conf
+  copy:
+    src: "/config/ossec.conf"
+    dest: "/var/ossec/etc/ossec.conf"
+
+- name: Connect wazuh-ahent
+  command: /var/ossec/bin/agent-auth -m 172.16.120.42
+
+- name: Start ossec-agentd
+  command: /var/ossec/bin/ossec-agentd start
+
+- name: Start Filebeat
+  service:
+    name: filebeat
+    state: started
+    enabled: yes
+
+- debug: msg="If you made it here your in the clear"
+
+#- name: Start Wazuh Agent
+#  service:
+#    name: wazuh-agent
+#    state: started
+#    enabled: yes

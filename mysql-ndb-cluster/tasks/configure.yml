@@ -1,0 +1,13 @@
+# Copy database dump file to remote host and restore it to database 'my_db'
+- name: Copy database dump file
+  copy:
+    src: /etc/ansible/mysql/CacheCluster_2019.sql
+    dest: /tmp/
+    owner: mysql
+    group: mysql
+    remote_src: no
+#- name: Restore CacheCluster Database
+#  mysql_db:
+#    name: CacheCluster
+#    state: import
+#    target: /tmp/CacheCluster_2019.sql

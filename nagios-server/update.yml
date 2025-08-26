@@ -1,0 +1,16 @@
+---
+#
+# Playbook to update templates on nagios host server
+# and restart nagios master server
+
+# role for nagios server
+- hosts: nagios
+#  remote_user: "{{ ansible_system_user }}"
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+
+    - name: Run tasks/update.yaml from nagios role
+      import_role:
+        name: nagios
+        tasks_from: update.yml

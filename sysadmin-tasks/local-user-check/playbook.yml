@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  become: yes
+  gather_facts: false
+  vars:
+    USER: "test"
+  tasks:
+
+    - import_tasks: "tasks/main.yml"
+
+
+

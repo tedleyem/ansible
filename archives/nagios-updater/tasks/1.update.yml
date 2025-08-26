@@ -1,0 +1,54 @@
+
+- name: Copy hosts.cfg file
+  copy:
+    src: "{{ playbook_dir }}/configs/hosts.cfg"
+    dest: "/usr/local/nagios/etc/objects/hosts.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost
+
+- name: Copy services.cfg
+  copy:
+    src: "{{ playbook_dir }}/configs/services.cfg"
+    dest: "/usr/local/nagios/etc/objects/services.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost
+
+- name: Copy hostgroups.cfg
+  copy:
+    src: "{{ playbook_dir }}/configs/hostgroups.cfg"
+    dest: "/usr/local/nagios/etc/objects/hostgroups.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost
+
+- name: Copy escalations.cfg
+  copy:
+    src: "{{ playbook_dir }}/configs/escalations.cfg"
+    dest: "/usr/local/nagios/etc/objects/escalations.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost
+
+- name: Copy contacts.cfg
+  copy:
+    src: "{{ playbook_dir }}/configs/contacts.cfg"
+    dest: "/usr/local/nagios/etc/objects/contacts.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost
+
+- name: Copy commands.cfg
+  copy:
+    src: "{{ playbook_dir }}/configs/commands.cfg"
+    dest: "/usr/local/nagios/etc/objects/commands.cfg"
+    group: nagios
+    owner: nagios
+    backup: yes
+  register: newhost

@@ -1,0 +1,34 @@
+ # Firewalld task to connect data nodes
+- name: check if firewalld exists
+  stat:
+    path: /etc/sysconfig/firewalld
+  register: firewall_rules
+  when: ansible_connection != 'docker'
+
+- name: "Add port {{ mysql_custom_port }}"
+  firewalld:
+    port: "{{ mysql_custom_port }}/tcp"
+    zone: public
+    permanent: true
+    state: enabled
+  when: "firewall_rules.stat.exists == true and ansible_connection != 'docker' "
+
+- name: "add iptable port {{ mysql_custom_port }}"
+  iptables:
+   chain: INPUT
+   protocol: tcp
+   jump: ACCEPT
+   destination_port: "{{ mysql_custom_port }}"
+  when: "firewall_rules.stat.exists == false and ansible_connection != 'docker' "
+
+#- name: Reload Firewall
+#  command: firewall-cmd --reload
+#  become: true
+
+#- name: Restart FirewallD
+#  systemd:
+#    name: firewalld
+#    state: restarted
+#  become: true
+#  when: "firewall_rules.stat.exists == true"
+# END FIREWALL

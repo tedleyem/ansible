@@ -1,0 +1,25 @@
+---
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  when: "firewall_rules.stat.exists == true"
+
+- name: Ensure Memcached {{ memcached_port }} is is started and enabled.
+  systemd:
+    name: memcached{{ memcached_port }}
+    state: started
+    enabled: yes
+
+- name: Ensure Memcached {{ memcached_port2 }} is started and enabled.
+  systemd:
+    name: memcached{{ memcached_port2 }}
+    state: started
+    enabled: yes
+  when: "memcached_port2 is defined"
+
+- name: Ensure Memcached {{ memcached_port3 }} is started and enabled.
+  systemd:
+    name: memcached{{ memcached_port3 }}
+    state: started
+    enabled: yes
+  when: "memcached_port3 is defined"

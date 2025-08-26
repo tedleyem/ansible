@@ -1,0 +1,12 @@
+- name: Create a Docker Network
+  docker_network:
+    name: "{{ docker_network }}"
+
+- name: "add port {{ docker_http_port }} to localhost"
+  iptables:
+   chain: INPUT
+   protocol: tcp
+   jump: ACCEPT
+   destination_port: " {{ docker_http_port }}"
+#  delegate_to: localhost
+  become: true

@@ -1,0 +1,13 @@
+---
+# Playbook to install nrpe agent for nagios master
+# via new ansible inventory
+- hosts: all
+  become: yes
+  tasks:
+  - name: Include OS-specific variables.
+    include_vars: "{{ playbook_dir}}/defaults/main.yml"
+  roles:
+    - role: nagios_host_info
+    - role: nagios_client # role to install nrpe on nagios clients
+    - role: firewall_client
+      when: manage_firewall|bool

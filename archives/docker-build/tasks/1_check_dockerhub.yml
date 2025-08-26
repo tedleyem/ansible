@@ -1,0 +1,9 @@
+---
+- name: Authenticate with Docker registry if registry password given
+  docker_login:
+    registry: "{{ dockerhub_registry }}"
+    username: "{{ dockerhub_username }}"
+    password: "{{ dockerhub_password | quote }}"
+    reauthorize: true
+  when: dockerhub_registry is defined and dockerhub_password is defined
+  delegate_to: localhost

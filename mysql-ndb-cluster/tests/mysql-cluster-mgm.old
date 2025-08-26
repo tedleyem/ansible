@@ -1,0 +1,66 @@
+- name: Add Mysql Repo
+  template:
+    src: mysql-community.repo.j2
+    dest: /etc/yum.repos.d/mysql-community.repo
+    mode: 0644
+  become: true
+
+- name: install mysql-cluster-community-management-server
+  yum:
+    name: mysql-cluster-community-management-server
+    state: present
+  become: true
+
+- import_tasks: firewall.yml
+  vars:
+    mysql_custom_port: "{{ mysql_ndb_port }}"
+
+- name: Create /var/lib/mysql-cluster/ dir
+  file:
+    path: /var/lib/mysql-cluster/
+    owner: mysql
+    group: mysql
+    state: directory
+    mode: 0644
+  become: true
+
+- name: Copy config.ini to /var/lib/mysql-cluster/
+  template:
+    src: config.ini.j2
+    dest: /var/lib/mysql-cluster/config.ini
+    mode: 0644
+  become: true
+
+- name: Install config BOCA
+  template:
+    src: "my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope != "atl"
+
+- name: Install config ATL
+  template:
+    src: "atl/my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope == "atl"
+
+- name: Set permissions for mysql data dir
+  file:
+    path: /var/lib/mysql-cluster
+    owner: mysql
+    group: mysql
+    recurse: yes
+    mode: 0755
+
+- name: Initialize ndb_mgmd
+#  command: ndb_mgmd -f /var/lib/mysql-cluster/config.ini --initial --config-dir=/var/lib/mysql-cluster
+  command: ndb_mgmd -f /var/lib/mysql-cluster/config.ini --config-dir=/var/lib/mysql-cluster --ndb-nodeid=1
+  become: true
+  ignore_errors: true
+
+#- name: Initialize ndb_mgmd
+#  command: ndb_mgmd
+#  become: true

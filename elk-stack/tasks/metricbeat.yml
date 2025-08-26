@@ -1,0 +1,28 @@
+---
+# 
+- name: Install metricbeat rpms
+  yum:
+    name: metricbeat
+  become: true
+
+- name: Generate metricbeat configuration template
+  template:
+    src: metricbeat.yml.j2
+    dest: /etc/metricbeat/metricbeat.yml
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  register: metricbeat_needs_restart
+
+- name: Start metricbeat service
+  command: systemctl start metricbeat.service
+  ignore_errors: true
+  become: true
+
+- name: Setup metricbeat service
+  service:
+    name: metricbeat
+    state: started
+    enabled: true
+  become: true

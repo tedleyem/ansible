@@ -1,0 +1,11 @@
+--- 
+- name: Update system packages 
+  hosts: all
+  gather_facts: true 
+  become: true
+  tasks: 
+    - name: Update all software package updates
+      package:
+        name: "*"
+        state: "latest" 
+

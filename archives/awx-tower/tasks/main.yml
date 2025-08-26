@@ -1,0 +1,64 @@
+---
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Create a directory /var/lib/pgdocker
+  file:
+    path: "{{ postgres_data_dir }}" # /var/lib/pgdocker
+    state: directory
+    mode: '0755'
+
+- name: Create local base config path
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - "/opt/docker"
+    - "/opt/docker/builds"
+
+# Remove docker pip package and Install docker-py
+- name: Remove DOCKER pip to prevent compatibility issues
+  pip:
+    name: docker
+    state: absent
+#    extra_args: --user
+  become: true
+
+# Remove docker pip package and Install docker-py
+- name: Install DOCKER-PY pip to prevent compatibility issues
+  pip:
+    name: docker-py >= 1.7.0
+    state: forcereinstall
+#    extra_args: --user
+  become: true
+
+# Install docker-py and other docker pip
+- name: Install docker python dependencies.
+  pip:
+    name: "{{ pip_package_dep }}"
+#    state: forcereinstall
+#    extra_args: --user
+  become: true
+
+- name: (YUM) makecache fast
+  command: "yum makecache fast"
+  args:
+    warn: no
+  become: true
+  ignore_errors: true
+
+- name: Install AWX dependencies.
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ awx_package_dependencies }}"
+
+- name: Clone AWX into {{ awx_repo_dir }}
+  git:
+    repo: "{{ awx_repo }}"
+    dest: "{{ awx_repo_dir }}"
+    version: "{{ awx_version }}"
+    update: "{{ awx_keep_updated }}"
+    force: yes
+    accept_hostkey: yes

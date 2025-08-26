@@ -1,0 +1,14 @@
+#Kibana Configuration
+#server.host: 127.0.0.1
+server.host: {{ kibana_server_host }}
+server.port: {{ kibana_server_port }}
+elasticsearch.hosts: "http://{{ ansible_default_ipv4.address }}:{{ es_http_port }}"
+#elasticsearch.hosts: "http://{{ es_host_port }}:{{ es_http_port }}"
+
+# Kibana uses an index in Elasticsearch to store saved searches, visualizations and
+# dashboards. Kibana creates a new index if the index doesn't already exist.
+kibana.index: "{{ kibana_kibana_index }}"
+
+# Enables you specify a file where Kibana stores log output.
+logging.dest: "{{ kibana_logging_dest }}"
+logging.verbose: true

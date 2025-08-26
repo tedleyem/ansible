@@ -1,0 +1,25 @@
+- name: Stop Wazuh Agent
+  service:
+    name: wazuh-agent
+    state: stopped
+    enabled: yes
+
+- name: Copy ossec.conf
+  copy:
+    src: "/config/ossec.conf"
+    dest: "/var/ossec/etc/ossec.conf"
+
+#- name: Restart Filebeat
+#  service:
+#    name: filebeat
+#    state: restarted
+#    enabled: yes
+
+- name: Retart Wazuh Agent
+  service:
+    name: wazuh-agent
+    state: restarted
+    enabled: yes
+
+#- name: Connect wazuh-ahent
+#  command: /var/ossec/bin/agent-auth -m 172.16.120.42

@@ -1,0 +1,19 @@
+- hosts: ansible
+#  become: true
+#  become_method: sudo
+  tasks:
+    - name: Include OS-specific variables.
+      include_vars: "defaults/main.yml"
+    - import_tasks: "tasks/main.yml"
+
+    - name: Run image_build playbooks
+      include_role:
+        name: image_build
+        defaults_from: main
+        tasks_from: main
+
+    - name: Run image_push playbooks
+      include_role:
+        name: image_push
+        defaults_from: main
+        tasks_from: main

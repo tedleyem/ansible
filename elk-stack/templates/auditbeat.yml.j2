@@ -1,0 +1,24 @@
+auditbeat.modules:
+
+- module: file_integrity
+  paths:
+  - /bin
+  - /usr/bin
+  - /sbin
+  - /usr/sbin
+  - /etc
+  exclude_files:
+    - '(?i)\.sw[nop]$'
+    - '~$'
+    - '/\.git($|/)'
+    - '/nfs/*'
+
+auditbeat.config.modules:
+  # Glob pattern for configuration reloading
+  path: ${path.config}/modules.d/*.yml
+  reload.period: 3600s
+  reload.enabled: false
+  auditbeat.max_start_delay: 1800s
+
+output.elasticsearch:
+  hosts: ["{{ es_cluster_ip }}:{{ es_local_port }}"]

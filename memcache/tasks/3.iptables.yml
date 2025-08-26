@@ -1,0 +1,28 @@
+- name: check if firewalld exists
+  stat:
+    path: /etc/sysconfig/firewalld
+  register: firewall_rules
+
+- name: Add TCP PORT {{ memcached_port }}
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "{{ memcached_port }}"
+  when: "memcached_port is defined and firewall_rules.stat.exists == false"
+
+- name: Add TCP PORT {{ memcached_port2 }}
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "{{ memcached_port2 }}"
+  when: "memcached_port2 is defined and firewall_rules.stat.exists == false"
+
+- name: Add TCP PORT {{ memcached_port3 }}
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "{{ memcached_port3 }}"
+  when: "memcached_port3 is defined and firewall_rules.stat.exists == false"

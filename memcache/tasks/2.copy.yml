@@ -1,0 +1,37 @@
+---
+ #COPY PORT 1 FILES
+- name: Copy memcache{{ memcached_port }} conf
+  template:
+    src: conf-port1.j2
+    dest: "/etc/sysconfig/memcached{{ memcached_port }}"
+
+- name: Copy memcache{{ memcached_port }} systemd config.
+  template:
+    src: systemd-port1.j2
+    dest: "/etc/systemd/system/memcached{{ memcached_port }}.service"
+
+ #COPY PORT 2 FILES
+- name: Copy memcache{{ memcached_port2 }} conf
+  template:
+    src: conf-port2.j2
+    dest: "/etc/sysconfig/memcached{{ memcached_port2 }}"
+  when: "memcached_port2 is defined"
+
+- name: Copy memcache{{ memcached_port2 }} systemd config.
+  template:
+    src: systemd-port2.j2
+    dest: "/etc/systemd/system/memcached{{ memcached_port2 }}.service"
+  when: "memcached_port2 is defined"
+
+ #COPY PORT 3 FILES
+- name: Copy memcache{{ memcached_port3 }} conf
+  template:
+    src: conf-port3.j2
+    dest: "/etc/sysconfig/memcached{{ memcached_port3 }}"
+  when: "memcached_port3 is defined"
+
+- name: Copy memcache{{ memcached_port3 }} systemd config.
+  template:
+    src: systemd-port3.j2
+    dest: "/etc/systemd/system/memcached{{ memcached_port3 }}.service"
+  when: "memcached_port3 is defined"

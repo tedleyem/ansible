@@ -1,0 +1,3 @@
+[net-docks]
+dolly[01:03] image="tmeralus/ansible-node" ansible_connection=docker
+dolly[04:06] image="tmeralus/ubuntu-node" ansible_connection=docker

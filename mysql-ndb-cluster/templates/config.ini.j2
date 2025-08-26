@@ -1,0 +1,21 @@
+[ndbd default]
+# Options affecting ndbd processes on all data nodes:
+NoOfReplicas= 2   # Number of replicas
+
+{% for host in groups["ndb_cluster_mgm"] %}
+[ndb_mgmd]
+HostName= {{ host }}
+DataDir= /var/lib/mysql-cluster
+{% endfor %}
+
+{% for host in groups["ndb_cluster_data"] %}
+[ndbd]
+HostName= {{ host }}
+DataDir= /usr/local/mysql/data
+
+{% endfor %}
+
+{% for host in groups["ndb_cluster_sql"] %}
+[mysqld]
+HostName= {{ host }}
+{% endfor %}

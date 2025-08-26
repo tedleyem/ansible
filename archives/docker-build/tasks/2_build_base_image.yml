@@ -1,0 +1,29 @@
+---
+- name: Build {{ dock_ubuntu_image }} using container locally
+  docker_container:
+    env:
+      http_proxy: "{{ http_proxy | default('') }}"
+      https_proxy: "{{ https_proxy | default('') }}"
+      no_proxy: "{{ no_proxy | default('') }}"
+    image: "{{ dock_ubuntu_image }}"
+    name: ubuntu_local
+    state: started
+    detach: false
+    volumes: ""
+  delegate_to: localhost
+  when: use_container_for_build|default(true)|bool
+
+
+- name: Build {{ dock_centos_image }} using container locally
+  docker_container:
+    env:
+      http_proxy: "{{ http_proxy | default('') }}"
+      https_proxy: "{{ https_proxy | default('') }}"
+      no_proxy: "{{ no_proxy | default('') }}"
+    image: "{{ dock_centos_image }}"
+    name: centos_local
+    state: started
+    detach: false
+    volumes: ""
+  delegate_to: localhost
+  when: use_container_for_build|default(true)|bool

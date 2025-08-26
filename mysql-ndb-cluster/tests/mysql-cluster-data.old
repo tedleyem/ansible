@@ -1,0 +1,52 @@
+- name: Add Mysql Repo
+  template:
+    src: mysql-community.repo.j2
+    dest: /etc/yum.repos.d/mysql-community.repo
+    mode: 0644
+  become: true
+
+- name: install mysql-cluster-community-data-node
+  yum:
+    name: mysql-cluster-community-data-node
+    state: present
+  become: true
+
+- name: Create /usr/local/mysql dir
+  file:
+    path: /usr/local/mysql
+    #owner: mysql
+    #group: mysql
+    state: directory
+    mode: 0644
+  become: true
+
+- name: Create /usr/local/mysql/data dir
+  file:
+    path: /usr/local/mysql/data
+    #owner: mysql
+    #group: mysql
+    state: directory
+    mode: 0644
+  become: true
+
+
+- name: Install config BOCA
+  template:
+    src: "my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope != "atl"
+
+- name: Install config ATL
+  template:
+    src: "atl/my.cnf.j2"
+    dest: /etc/my.cnf
+    mode: 0644
+  become: true
+  when: scope == "atl"
+
+- name: Initialize ndb
+  command: ndbd --initial
+  become: true
+  ignore_errors: true

@@ -1,0 +1,23 @@
+localhost
+
+[net-docks]
+dolly[01:03] image="<user-name>/ansible-node" ansible_connection=docker
+dolly[04:06] image="<user-name>/ubuntu-node" ansible_connection=docker
+
+[memcache]
+dolly01 ansible_connection=docker
+dolly02 ansible_connection=docker
+
+[mysql_cluster_mgm]
+dolly01 ansible_connection=docker
+
+[mysql_cluster_data]
+dolly02 ansible_connection=docker
+
+[mysql_cluster_sql]
+dolly03 ansible_connection=docker
+
+[redis]
+dolly01 ansible_connection=docker env=master
+dolly02 ansible_connection=docker env=slave
+dolly03 ansible_connection=docker env=sentinel

@@ -1,0 +1,18 @@
+---
+
+- name: setup group
+  group:
+    name: "{{ jenkins_group }}"
+    system: false
+
+- name: setup user
+  user:
+    name: "{{ jenkins_user }}"
+    system: false
+    group: "{{ jenkins_group }}"
+
+- name: setup user
+  user:
+    name: "{{ system_user }}"
+    system: false
+    group: "{{ system_group }}"

@@ -1,0 +1,35 @@
+---
+# Install/run influxdb
+- name: "[Influxdb] Install influxdb"
+  yum:
+    name: influxdb
+    state: present
+  become: true
+
+- name: "[Influxdb] Copy templated influxdb.conf"
+  template:
+    src: "influxdb.conf.j2"
+    dest: "/etc/influxdb/influxdb.conf"
+    mode: 0644
+  become: true
+
+- name: "[Influxdb] Enable Influxdb on boot"
+  service:
+    name: influxd
+    state: started
+    enabled: true
+  become: true
+
+#
+#- name: "[Influxdb] Create {{ influxdb_db_name }} database"
+#  influxdb_database:
+#      hostname: "{{influx_bind_loop}}"
+#      database_name: "{{influxdb_db_name}}"
+
+#- name: "[Influxdb] Create user for {{ influxdb_db_name }} with privileges"
+#  influxdb_user:
+#    user_name: "{{ influxdb_root_user }}"
+#    user_password: "{{ influxdb_root_pass }}"
+#    grants:
+#      - database: "{{ influxdb_db_name }}"
+#        privilege: '{{ influxdb_database_priv_all }}'

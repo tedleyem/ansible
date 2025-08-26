@@ -1,0 +1,73 @@
+version: '3'
+services:
+  jira:
+    container_name: jira
+#    image: atlassian/jira-software:8.12.1
+    image: <user-name>/jira-software:setup
+    environment:
+     - ATL_PROXY_NAME=jira.internal
+     - ATL_PROXY_PORT=80
+     - ATL_TOMCAT_SCHEME=http
+     - JVM_MINIMUM_MEMORY=384m
+     - JVM_MAXIMUM_MEMORY=768m
+     - JVM_RESERVED_CODE_CACHE_SIZE=512m
+    volumes:
+     - ./data/jira:/var/atlassian/jira
+
+  confluence:
+    container_name: confluence
+    image: atlassian/confluence-server:latest
+    environment:
+     - ATL_PROXY_NAME=confluence.internal
+     - ATL_PROXY_PORT=80
+     - ATL_TOMCAT_SCHEME=http
+    volumes:
+     - ./data/confluence:/var/atlassian/application-data/confluence
+
+  bitbucket:
+    container_name: bitbucket
+    image: atlassian/bitbucket-server:latest
+    environment:
+     - SERVER_PROXY_NAME=bitbucket.internal
+     - SERVER_PROXY_PORT=80
+     - SERVER_SCHEME=http
+    volumes:
+     - ./data/bitbucket:/var/atlassian/application-data/bitbucket
+
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - 8081:8081
+      - 50000:50000
+    container_name: jenkins
+    volumes:
+      - ./data/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+
+#  nginx:
+#    container_name: nginx
+#    image: nginx
+#    volumes:
+#     - ./data/nginx/
+#     - ./nginx.conf:/etc/nginx/nginx.conf
+#     - ./ssl/:/etc/ssl/private
+#    depends_on:
+#     - jira
+#     - confluence
+#     - bitbucket
+#     - jenkins
+#    ports:
+#     - "80:80"
+#     - "443:443"
+#     - "8080:8080"
+#    networks:
+#      default:
+#        aliases:
+#         - jira.internal
+#         - confluence.internal
+#         - bitbucket.internal
+#         - jenkins.internal

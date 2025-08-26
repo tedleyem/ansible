@@ -1,0 +1,31 @@
+#=========================== Filebeat inputs =============================
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/messages
+    - /var/log/*/*.log
+    - /var/log/containers/*/*.log
+
+  # Exclude lines. A list of regular expressions to match. It drops the lines that are
+  # matching any regular expression from the list.
+  #exclude_lines: ['^DBG']
+  include_lines: ['^ERR', '^WARN']
+  exclude_files: ['.gz$']
+
+  # Optional additional fields. These fields can be freely picked
+  # to add additional information to the crawled log files for filtering
+  fields:
+    level: debug
+    review: 1
+
+  ### Multiline options
+  # Multiline can be used for log messages spanning multiple lines. This is common
+  # for Java Stack Traces or C-Line Continuation
+  multiline.pattern: ^\[
+  multiline.negate: false
+  multiline.match: after
+
+output.elasticsearch:
+  hosts: ["{{ es_cluster_ip }}:{{ es_local_port }}"]

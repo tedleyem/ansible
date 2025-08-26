@@ -1,0 +1,115 @@
+---
+# Update nagios template files  on nagios master node
+- name: Generate the nagios monitoring templates
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/conf.d/{{ item }}
+            force=yes
+  with_items:
+#    - switches.cfg
+#    - webservers.cfg
+#    - servers.cfg
+    - commands.cfg
+#    - commands.cfg.j2
+#    - elkservers.cfg
+#    - elasticsearch.cfg
+#    - jenkins.cfg
+#    - dns.cfg
+#    - devices.cfg
+  register: nagios_needs_restart
+  become: true
+
+- name: Generate the nagios contact template and localhost config
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/objects/{{ item }}
+            force=yes
+  with_items:
+    - contacts.cfg
+    - localhost.cfg
+#    - localhost.cfg.j2
+  become: true
+
+#- name: Generate templated FreeNAS Python status script based on SSL settings
+#  template: src={{ item + ".j2" }}
+#            dest=/usr/lib64/nagios/plugins/check_freenas.py
+#            force=yes
+#  with_items:
+#    - check_freenas.py
+#  become: true
+
+#- name: Make FreeNAS Python status script executable
+#  file:
+#    dest: /usr/lib64/nagios/plugins/check_freenas.py
+#    mode: a+x
+
+- name: Generate the nagios user CGI template
+  template: src={{ item + ".j2" }}
+            dest=/etc/nagios/{{ item }}
+  with_items:
+    - cgi.cfg
+    - services.cfg
+  become: true
+
+
+- name: Create nagios socket tmp files
+  file:
+    path=/var/log/nagios/rw
+    state=directory
+    owner=nagios
+    group=nagios
+    mode=0777
+    seuser=system_u
+  become: true
+
+# nagios upgrade to 4.2.4 requires this
+# todo: file bug
+- name: Create nagios results directory
+  file:
+    path=/var/log/nagios/spool/checkresults
+    state=directory
+    owner=nagios
+    group=nagios
+    mode=0755
+    seuser=system_u
+  become: true
+
+# employ lineinfile fix for faulty, shipped nagios systemd service
+- name: Check/fix systemd service file
+  lineinfile: dest=/usr/lib/systemd/system/nagios.service \
+          regexp="^ExecStopPost=" \
+          line="ExecStopPost=/usr/bin/rm -f /var/spool/nagios/cmd/nagios.cmd /var/log/nagios/rw/nagios.qh"
+  register: systemd_nagios_changed
+  become: true
+
+# change listening port for http to match group_vars/all.yml
+- name: Set HTTP Listen Port
+  lineinfile: dest=/etc/httpd/conf/httpd.conf \
+          regexp="^Listen" \
+          line="Listen {{nagios_http_port}}"
+  become: true
+
+- name: Reload Systemd if needed
+  command: systemctl daemon-reload
+  when: systemd_nagios_changed !=0
+  become: true
+
+- name: Start nagios service
+  command: systemctl restart nagios.service
+  when: nagios_needs_restart != 0
+  become: true
+
+- name: Set nagios to start on boot
+  command: systemctl enable nagios.service
+  ignore_errors: true
+  become: true
+
+- name: Setup HTTPD service
+  command: systemctl enable httpd.service
+  ignore_errors: true
+  when: nagios_needs_restart !=0
+  become: true
+
+- name: Restart HTTPD service
+  command: systemctl restart httpd.service
+  ignore_errors: true
+  when: nagios_needs_restart !=0
+  become: true

@@ -1,0 +1,20 @@
+---
+dependencies: ['tmeralus.elk_stack']
+galaxy_info:
+  role_name: wazuh-setup
+  author: tmeralus
+  description: Install/Setup Wazuh with ELK Stack
+  issue_tracker_url: https://github.com/tmeralus/ansible-role-wazuh-setup/issues
+  company: ""
+  license: "license (GPLv3, )"
+  min_ansible_version: 2.5.4
+  platforms:
+    - name: EL
+      versions:
+        - all
+  galaxy_tags:
+    - wazuh-hids
+    - logstash
+    - Elasticsearch
+    - kibana
+    - file-integrity

@@ -1,0 +1,67 @@
+---
+ansible_system_user: ansible
+epel_repo: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum_repo_gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+manage_firewall: true
+open_ssl_check: no
+java_packages:
+  - java-1.8.0-openjdk
+es_cluster_name: "{{ansible_hostname}}"
+es_cluster: "{{ansible_hostname}}"
+es_node_name: "{{ansible_hostname}}"
+es_listen_external: true
+elk_server_ssl_cert_port: 8080
+es_network_host: localhost
+es_path_data: /var/lib/elasticsearch
+es_path_logs: /var/log/elasticsearch
+es_http_port: "9200"
+kibana_app_url: https://packages.wazuh.com/wazuhapp/wazuhapp-3.9.3_7.2.0.zip
+elastic_version: 7.3.0
+elastic_repo_version: 7.x
+elk_repo_url: https://artifacts.elastic.co/packages/{{ elastic_repo_version }}/yum
+es_bootstrap_memory_lock: true # True | false
+es_jvm_heap_size: "-Xms4g"
+#elasticsearch cluster settings
+#es_data_node: ""
+es_node_check: yes # determines is this will be a cluster or not
+es_node_master: true
+gateway_recover_after_nodes: 3
+discovery_zen_minimum_master_nodes: 3
+action_destructive_requires_name: "true"
+es_discovery_zen_ping_unicast_hosts: ["127.0.0.1","127.0.0.2","127.0.0.3",]
+es_cluster_routing_allocation_same_shard_host: true
+es_jvm_custom_parameters: ""
+# XPACK settings
+es_xpack: yes
+es_xpack_monitoring_history_duration: 1d
+es_xpack_monitoring_collection_enabled: true
+# KIBANA SETTINGS
+www_kibana_port: 80
+kibana_server_host: 0.0.0.0
+kibana_server_port: 5601
+elasticsearch_url: "http://{{ 123 }}:{{ es_http_port }}"
+kibana_kibana_index: ".kibana"
+kibana_logging_dest: /var/log/kibana.log
+kibana_logging_verbose: true
+kibana_server_basePath:
+
+# LOGSTASH SETTINGS
+logstash_syslog_port: 5044
+logstash_localsyslog_port: 5000
+syslog_listen_external: true
+logstash_http_host: "127.0.0.1"
+logstash_http_port: 9600-9700
+logstash_log_level: info
+logstash_path_logs: /var/log/logstash
+logging_verbose: true
+# ELK-BEAT SETTINGS
+es_local_port: 9200
+install_curator_tool: true
+xpack_elastic_user_password:
+install_elasticsearch_xpack: true
+install_kibana_xpack: true
+install_logstash_xpack: true
+install_metricbeat: false
+install_packetbeat: false
+install_heartbeat: false
+install_wazuh_agent: true
