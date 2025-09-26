@@ -1,4 +1,5 @@
 Vagrant.configure("2") do |config|
+config.vm.box_download_insecure = true # prevent ssl certificate in keychain errors on mac 
 #required_version ">= 1.8.0"
 # Defining the VM
   vms = [
