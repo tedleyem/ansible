@@ -36,7 +36,7 @@ config.vm.box_download_insecure = true # prevent ssl certificate in keychain err
 
   # Generate Ansible inventory file after all VMs are up
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "upgrade-tidal-agent.yml"
+    ansible.playbook = "docker-setup/playbook.yml"
     #ansible.inventory_path = "inventory"
     ansible.limit = "all"
     ansible.host_key_checking = false
