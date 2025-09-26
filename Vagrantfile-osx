@@ -1,0 +1,53 @@
+Vagrant.configure("2") do |config|
+config.vm.box_download_insecure = true # prevent ssl certificate in keychain errors on mac 
+# Defining the VM
+  vms = [ # useing arm-compatible boxes on osx
+    { name: "ubuntu2204", box: "bento/ubuntu-22.04", ip: "192.168.56.11" },
+    { name: "rhel9", box: "generic/rhel9", ip: "192.168.56.15" }
+  ]
+  # Configure VM settings 
+  vms.each do |vm|
+    config.vm.define vm[:name] do |node|
+      node.vm.box = vm[:box]
+      node.vm.hostname = vm[:name]
+      node.vm.network "private_network", ip: vm[:ip]
+
+      # Virtualbox settings
+      node.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048 # 2GBS
+        vb.cpus = 1
+      end
+      # SSH configuration for Ansible
+      node.vm.provision "shell", inline: <<-SHELL
+        # Ensure SSH is configured
+        sudo apt-get update && sudo apt-get install -y openssh-server || sudo dnf install -y openssh-server
+        sudo systemctl enable sshd
+        sudo systemctl start sshd
+        # Add vagrant user to sudoers (no password for simplicity)
+        echo "vagrant ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/vagrant
+        # Ensure vagrant user has SSH keys
+        mkdir -p /home/vagrant/.ssh
+        chmod 700 /home/vagrant/.ssh
+        chmod 600 /home/vagrant/.ssh/authorized_keys
+        chown -R vagrant:vagrant /home/vagrant/.ssh
+      SHELL
+    end
+  end
+
+  # Generate Ansible inventory file after all VMs are up
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "upgrade-tidal-agent.yml"
+    #ansible.inventory_path = "inventory"
+    ansible.limit = "all"
+    ansible.host_key_checking = false
+    ansible.host_vars = {
+      "ubuntu2204" => {"http_port" => 80},
+      "rhel9" => {"http_port" => 80}
+    }
+    ansible.extra_vars = {
+      ansible_user: "vagrant",
+    }
+  end
+end
+
+
