@@ -1,26 +1,34 @@
 Vagrant.configure("2") do |config|
-config.vm.box_download_insecure = true # prevent ssl certificate in keychain errors on mac 
+config.vm.box_download_insecure = true # prevent ssl certificate in keychain errors on mac
+
 # Defining the VM
-  vms = [ # useing arm-compatible boxes on osx
-    { name: "ubuntu2204", box: "bento/ubuntu-22.04", ip: "192.168.56.11" },
-    { name: "rhel9", box: "generic/rhel9", ip: "192.168.56.15" }
+  vms = [ # using arm-compatible boxes on osx
+    { name: "ubuntu2204", box: "bento/ubuntu-22.04", provider: "virtualbox"},
+    { name: "rhel9", box: "generic/rhel9", provider: "virtualbox"}
   ]
   # Configure VM settings 
   vms.each do |vm|
     config.vm.define vm[:name] do |node|
       node.vm.box = vm[:box]
       node.vm.hostname = vm[:name]
-      node.vm.network "private_network", ip: vm[:ip]
+      #node.vm.network "private_network", ip: vm[:ip]
 
       # Virtualbox settings
-      node.vm.provider "virtualbox" do |vb|
+      node.vm.provider vm[:provider] do |vb|
+        vb.name = vm[:name]
         vb.memory = 2048 # 2GBS
         vb.cpus = 1
       end
       # SSH configuration for Ansible
       node.vm.provision "shell", inline: <<-SHELL
-        # Ensure SSH is configured
-        sudo apt-get update && sudo apt-get install -y openssh-server || sudo dnf install -y openssh-server
+        if grep -q "^ID=ubuntu" /etc/os-release; then
+          echo "Running on Ubuntu. Performing apt-get update."
+          sudo apt-get update && sudo apt-get install -y openssh-server
+        elif grep -q "^ID=\"rhel\"" /etc/os-release; then
+          echo "Running on RHEL. Performing yum update."
+          sudo yum update -y && sudo yum install -y openssh-server
+        fi
+        
         sudo systemctl enable sshd
         sudo systemctl start sshd
         # Add vagrant user to sudoers (no password for simplicity)
@@ -47,6 +55,7 @@ config.vm.box_download_insecure = true # prevent ssl certificate in keychain err
     ansible.extra_vars = {
       ansible_user: "vagrant",
     }
+    ansible.become = true
   end
 end
 
