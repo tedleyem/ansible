@@ -1,0 +1,23 @@
+TODO:
+
+understand the factory part of the ansible playbook.
+confirm python project works on docker environment with username and password.
+convert python project to ansible module
+
+- modules_utils
+ |____entities.py --stores classes for passwords
+ |___factory.py --stores api credentials and login information
+        -- test all connections
+        -- check for all api credentials available
+        -- get credentials from env if avaiable
+        -- make sure this work in ansible
+
+- modules
+ |___team_password_manager.py
+  --get passwords
+  --get project id
+  --get certificates
+  --require project id
+  --require password
+  --print password as json
+

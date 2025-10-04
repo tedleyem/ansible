@@ -1,4 +1,0 @@
----
-- hosts: localhost
-  tasks:
-    - import_tasks: "tasks/main.yml"

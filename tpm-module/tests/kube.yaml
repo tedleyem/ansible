@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tmp-pod
+  labels:
+    app: teampasswordmanager
+spec:
+  containers:
+  - name: tpm-app
+    image: teampasswordmanager/teampasswordmanager
+    ports:
+      - containerPort: 80

@@ -1,0 +1,36 @@
+- hosts: all
+  vars:
+    tpm_hostname: teampasswordmanager.com
+    tpm_public_key: <public_key>
+    tpm_private_key: <private_key>
+  tasks:
+  - name: Register new credential
+    tedleyem.tpm.password:
+      name: secret-name
+      project_name: project-name
+      tags:
+        - tag1
+        - tag2
+      access_info: http://hostname.com
+      username: username
+      email: username@hostname.com
+      password: mySup3rp@$$w0rd
+    register: created_secret
+
+  - debug: var=created_secret.tpm
+  # First matching result (tpm query language)
+  - debug: msg="{{ query('tedleyem.tpm.password', 'username:admin tag:tag1,tag2') }}"
+  - debug: msg="{{ lookup('tedleyem.tpm.password', 'username:admin tag:tag1,tag2', field='password') }}"
+  - debug: msg="{{ query('tedleyem.tpm.password', 'username:admin tag:tag1,tag2', field='password') }}"
+
+  # All matching results (tpm query language)
+  - debug: msg="{{ query('tedleyem.tpm.password', 'username:admin tag:tag1,tag2', all=True) }}"
+  - debug: msg="{{ lookup('tedleyem.tpm.password', 'username:admin tag:tag1,tag2', all=True, field='password') }}"
+  - debug: msg="{{ query('tedleyem.tpm.password', 'username:admin tag:tag1,tag2', all=True, field='password') }}"
+
+  # Get from password's id
+  - debug: msg="{{ query('tedleyem.tpm.password', id=1234) }}"
+  - debug: msg="{{ lookup('tedleyem.tpm.password', id=1234, field='password') }}"
+
+  # Generate a new password
+  - debug: msg="{{ lookup('tedleyem.tpm.password', generate=True) }}"

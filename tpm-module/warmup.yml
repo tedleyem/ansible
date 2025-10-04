@@ -1,0 +1,25 @@
+---
+- name: test
+  hosts: localhost
+  tasks:
+    - name: Get password from Project
+      set_fact:
+        team_password_manager:
+          auth: "auth:deploy"
+          get_passwords_from_projects: "{{ site_map_ids[deploy_environment]['projects']|default([]) }}"
+          get_passwords: "{{ site_map_ids[deploy_environment]['passwords']|default([]) }}"
+      register: tpm_pass_key
+
+    - name: Prints two lines of messages, but only if there is an environment value set
+      ansible.builtin.debug:
+        msg: "{{ tpm_pass_key }}"
+
+#    - name: Get passwords from TPM (warmup)
+#      team_password_manager: "{{ tpm_config | combine({'update_cache': True}) }}"
+#      connection: local
+#      run_once: True
+
+#    - name: Print Password from TPM
+#      team_password_manager: "{{ tpm_config }}"
+#      connection: local
+#      register: tpm_pass_list

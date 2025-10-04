@@ -1,4 +1,0 @@
----
-redis_package: redis
-redis_daemon: redis
-redis_conf_dir: "/etc/redis"

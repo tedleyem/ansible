@@ -1,23 +1,23 @@
 ---
+# vars file for redis
 # MAIN REDIS CONFIGUTATION SETTINGS
-redis_version: "5.0.5"
-redis_url: "http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
 redis_dir: "/opt/redis-{{ redis_version }}"
-install_dir: "/opt/"
-redis_run_dir: "/var/run/redis"
 redis_conf_dir: "/etc/redis"
-redis_lib_dir: "/var/lib/redis"
 redis_logfile: "/var/log/redis.log"
 redis_port: "6379"
-sentinel_port: "26379"
 redis_bind_loop: 127.0.0.1
+
+# Used for RHEL/CentOS/Fedora only. Allows the use of different repos.
+redis_enablerepo: epel
 
 # Cache or Only or Session-Store options
 # Change to 1 for yes or 2 for no | Both values can't be the same
 redis_cache: 1
 redis_session: 0
+# settings for adding passwords to redis
+protected_mode: ""
 redis_requirepass: #password123
-redis_master_auth: #master
+redis_master_auth: #master auth used for redis sentinel and clustering
 
 # REDIS.CONF SETTINGS
 redis_daemon: redis
